@@ -19,24 +19,12 @@ export default function App() {
   return (
     <GluestackUIProvider mode="light">
       {fontsLoaded ? (
-        <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        >
-          <Text
-            style={{
-              fontFamily: 'Karla_700Bold',
-              fontSize: 20,
-              textAlign: 'center',
-            }}
-          >
-            Hello World
-          </Text>
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-md font-bold text-blue-500">Hello World</Text>
         </View>
       ) : (
-        <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        >
-          <ActivityIndicator size="large" />
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" className="text-gray-700" />
         </View>
       )}
     </GluestackUIProvider>

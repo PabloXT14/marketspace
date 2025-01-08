@@ -1,5 +1,9 @@
 import gluestackPlugin from '@gluestack-ui/nativewind-utils/tailwind-plugin'
 
+import { colors } from './src/styles/colors'
+import { fontSize } from './src/styles/font-size'
+import { fontFamily } from './src/styles/font-family'
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: process.env.DARK_MODE ? process.env.DARK_MODE : 'media',
@@ -167,18 +171,21 @@ module.exports = {
           info: 'rgb(var(--color-indicator-info)/<alpha-value>)',
           error: 'rgb(var(--color-indicator-error)/<alpha-value>)',
         },
+        ...colors,
       },
       fontFamily: {
         heading: undefined,
         body: undefined,
         mono: undefined,
         roboto: ['Roboto', 'sans-serif'],
+        ...fontFamily,
       },
       fontWeight: {
         extrablack: '950',
       },
       fontSize: {
         '2xs': '10px',
+        ...fontSize,
       },
       boxShadow: {
         'hard-1': '-2px 2px 8px 0px rgba(38, 38, 38, 0.20)',
