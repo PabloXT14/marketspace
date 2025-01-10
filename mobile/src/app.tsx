@@ -6,9 +6,8 @@ import {
 } from '@expo-google-fonts/karla'
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider'
-
 import { Loading } from '@/components/loading'
-import { Button, ButtonText } from '@/components/button'
+import { Input } from '@/components/input'
 
 import Logo from '@/assets/logo.svg'
 import '../global.css'
@@ -22,12 +21,13 @@ export default function App() {
   return (
     <GluestackUIProvider mode="light">
       {fontsLoaded ? (
-        <View className="flex-1 justify-center items-center">
+        <View className="flex-1 justify-center items-center p-4">
           <Logo />
 
-          <Button className="w-4/5">
-            <ButtonText>Entrar</ButtonText>
-          </Button>
+          <View className="gap-2 w-full">
+            <Input placeholder="Name" errorMessage={'Name is required'} />
+            <Input placeholder="Email" />
+          </View>
         </View>
       ) : (
         <Loading />
