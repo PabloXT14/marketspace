@@ -6,19 +6,24 @@ import {
   CheckboxIndicator,
   CheckboxIcon,
   CheckboxLabel,
+  CheckboxGroup,
 } from '@/components/ui/checkbox'
+
 import { colors } from '@/styles/colors'
 
 type CheckboxProps = ComponentProps<typeof UICheckbox> & {
   label: string
 }
 
-export function Checkbox({ label, ...props }: CheckboxProps) {
+function CheckIcon() {
+  return <Check size={14} weight="bold" color={colors.white} />
+}
+
+function Checkbox({ label, ...props }: CheckboxProps) {
   return (
     <UICheckbox size="lg" {...props}>
-      <CheckboxIndicator className="border-2 data-[checked=true]:bg-blue-500 data-[checked=true]:border-blue-500 data-[active=true]:data-[checked=true]:bg-blue-500 data-[active=true]:data-[checked=true]:border-blue-500">
-        {/* <CheckboxIcon as={Check} className="fill-white" size="md" /> */}
-        <Check size={14} weight="bold" color={colors.white} />
+      <CheckboxIndicator className="border-2 border-gray-400 data-[checked=true]:bg-blue-500 data-[checked=true]:border-blue-500 data-[active=true]:data-[checked=true]:bg-blue-500 data-[active=true]:data-[checked=true]:border-blue-500">
+        <CheckboxIcon as={CheckIcon} />
       </CheckboxIndicator>
 
       <CheckboxLabel className="text-base font-regular leading-snug text-gray-600">
@@ -27,3 +32,5 @@ export function Checkbox({ label, ...props }: CheckboxProps) {
     </UICheckbox>
   )
 }
+
+export { Checkbox, CheckboxGroup }
