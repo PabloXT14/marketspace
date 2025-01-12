@@ -7,6 +7,10 @@ import {
 } from '@expo-google-fonts/karla'
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider'
+
+import { VStack } from '@/components/ui/vstack'
+import { HStack } from '@/components/ui/hstack'
+
 import { Loading } from '@/components/loading'
 import { Input } from '@/components/input'
 import { Checkbox, CheckboxGroup } from '@/components/checkbox'
@@ -44,10 +48,10 @@ export default function App() {
   return (
     <GluestackUIProvider mode="light">
       {fontsLoaded ? (
-        <View className="flex-1 justify-center items-center p-4 gap-3">
+        <VStack className="flex-1 justify-center items-center p-4 gap-3">
           <Logo />
 
-          <View className="gap-4 w-full">
+          <VStack className="gap-4 w-full">
             <Input placeholder="Name" />
 
             <Input placeholder="Email" />
@@ -70,9 +74,9 @@ export default function App() {
               <Radio value="radio-2" label="Radio 2" />
               <Radio value="radio-3" label="Radio 3" />
             </RadioGroup>
-          </View>
+          </VStack>
 
-          <View className="gap-4 w-full items-start flex-row">
+          <HStack className="gap-4 w-full items-start">
             {tags.map(tag => (
               <Tag
                 key={tag}
@@ -90,8 +94,8 @@ export default function App() {
                 />
               </Tag>
             ))}
-          </View>
-        </View>
+          </HStack>
+        </VStack>
       ) : (
         <Loading />
       )}
