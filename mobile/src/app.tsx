@@ -11,6 +11,7 @@ import { Loading } from '@/components/loading'
 import { Input } from '@/components/input'
 import { Checkbox, CheckboxGroup } from '@/components/checkbox'
 import { Radio, RadioGroup } from '@/components/radio'
+import { Tag, TagText, TagCloseIcon } from '@/components/tag'
 
 import Logo from '@/assets/logo.svg'
 import '../global.css'
@@ -26,13 +27,24 @@ export default function App() {
   ])
   const [radioSelected, setRadioSelected] = useState('')
 
+  const [tags, setTags] = useState(['novo', 'usado'])
+  const [tagsSelected, setTagsSelected] = useState<string[]>([])
+
   // console.log('CHECKBOX VALUES: ', checkboxValuesSelected)
   // console.log('RADIO SELECTED: ', radioSelected)
+
+  function handleToggleTag(tag: string) {
+    if (tagsSelected.includes(tag)) {
+      setTagsSelected(tagsSelected.filter(t => t !== tag))
+    } else {
+      setTagsSelected([...tagsSelected, tag])
+    }
+  }
 
   return (
     <GluestackUIProvider mode="light">
       {fontsLoaded ? (
-        <View className="flex-1 justify-center items-center p-4">
+        <View className="flex-1 justify-center items-center p-4 gap-3">
           <Logo />
 
           <View className="gap-4 w-full">
@@ -58,6 +70,26 @@ export default function App() {
               <Radio value="radio-2" label="Radio 2" />
               <Radio value="radio-3" label="Radio 3" />
             </RadioGroup>
+          </View>
+
+          <View className="gap-4 w-full items-start flex-row">
+            {tags.map(tag => (
+              <Tag
+                key={tag}
+                variant={tagsSelected.includes(tag) ? 'primary' : 'secondary'}
+                onPress={() => handleToggleTag(tag)}
+              >
+                <TagText
+                  variant={tagsSelected.includes(tag) ? 'primary' : 'secondary'}
+                >
+                  {tag}
+                </TagText>
+
+                <TagCloseIcon
+                  variant={tagsSelected.includes(tag) ? 'primary' : 'secondary'}
+                />
+              </Tag>
+            ))}
           </View>
         </View>
       ) : (
