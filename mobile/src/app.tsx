@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { View } from 'react-native'
 import {
   useFonts,
   Karla_400Regular,
@@ -16,8 +15,10 @@ import { Input } from '@/components/input'
 import { Checkbox, CheckboxGroup } from '@/components/checkbox'
 import { Radio, RadioGroup } from '@/components/radio'
 import { Tag, TagText, TagCloseIcon } from '@/components/tag'
+import { Switch } from '@/components/switch'
 
 import Logo from '@/assets/logo.svg'
+
 import '../global.css'
 
 export default function App() {
@@ -51,7 +52,7 @@ export default function App() {
         <VStack className="flex-1 justify-center items-center p-4 gap-3">
           <Logo />
 
-          <VStack className="gap-4 w-full">
+          <VStack className="gap-4 w-full items-start">
             <Input placeholder="Name" />
 
             <Input placeholder="Email" />
@@ -74,27 +75,33 @@ export default function App() {
               <Radio value="radio-2" label="Radio 2" />
               <Radio value="radio-3" label="Radio 3" />
             </RadioGroup>
-          </VStack>
 
-          <HStack className="gap-4 w-full items-start">
-            {tags.map(tag => (
-              <Tag
-                key={tag}
-                variant={tagsSelected.includes(tag) ? 'primary' : 'secondary'}
-                onPress={() => handleToggleTag(tag)}
-              >
-                <TagText
+            <HStack className="gap-4 w-full items-start">
+              {tags.map(tag => (
+                <Tag
+                  key={tag}
                   variant={tagsSelected.includes(tag) ? 'primary' : 'secondary'}
+                  onPress={() => handleToggleTag(tag)}
                 >
-                  {tag}
-                </TagText>
+                  <TagText
+                    variant={
+                      tagsSelected.includes(tag) ? 'primary' : 'secondary'
+                    }
+                  >
+                    {tag}
+                  </TagText>
 
-                <TagCloseIcon
-                  variant={tagsSelected.includes(tag) ? 'primary' : 'secondary'}
-                />
-              </Tag>
-            ))}
-          </HStack>
+                  <TagCloseIcon
+                    variant={
+                      tagsSelected.includes(tag) ? 'primary' : 'secondary'
+                    }
+                  />
+                </Tag>
+              ))}
+            </HStack>
+
+            <Switch />
+          </VStack>
         </VStack>
       ) : (
         <Loading />
