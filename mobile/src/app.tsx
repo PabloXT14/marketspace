@@ -16,6 +16,18 @@ import { Checkbox, CheckboxGroup } from '@/components/checkbox'
 import { Radio, RadioGroup } from '@/components/radio'
 import { Tag, TagText, TagCloseIcon } from '@/components/tag'
 import { Switch } from '@/components/switch'
+import {
+  Select,
+  SelectTrigger,
+  SelectInput,
+  SelectIcon,
+  SelectPortal,
+  SelectBackdrop,
+  SelectContent,
+  SelectItem,
+  SelectDragIndicator,
+  SelectDragIndicatorWrapper,
+} from '@/components/select'
 
 import Logo from '@/assets/logo.svg'
 
@@ -34,6 +46,20 @@ export default function App() {
 
   const [tags, setTags] = useState(['novo', 'usado'])
   const [tagsSelected, setTagsSelected] = useState<string[]>([])
+
+  const [selectOptions, setSelectOptions] = useState([
+    { label: 'Todos', value: 'all' },
+    { label: 'Ativos', value: 'active' },
+    { label: 'Inativos', value: 'inactive' },
+  ])
+  const [optionSelected, setOptionSelected] = useState(selectOptions[0])
+
+  function handleSelectOption(value: string) {
+    const option = selectOptions.find(o => o.value === value)
+    if (option) {
+      setOptionSelected(option)
+    }
+  }
 
   // console.log('CHECKBOX VALUES: ', checkboxValuesSelected)
   // console.log('RADIO SELECTED: ', radioSelected)
@@ -101,6 +127,30 @@ export default function App() {
             </HStack>
 
             <Switch />
+
+            <Select
+              defaultValue={optionSelected.value}
+              initialLabel={optionSelected.label}
+              onValueChange={value => handleSelectOption(value)}
+            >
+              <SelectTrigger>
+                <SelectInput placeholder="Selecione uma opção" />
+                <SelectIcon />
+              </SelectTrigger>
+
+              <SelectPortal>
+                <SelectBackdrop />
+                <SelectContent>
+                  {selectOptions.map(option => (
+                    <SelectItem
+                      key={option.value}
+                      value={option.value}
+                      label={option.label}
+                    />
+                  ))}
+                </SelectContent>
+              </SelectPortal>
+            </Select>
           </VStack>
         </VStack>
       ) : (
