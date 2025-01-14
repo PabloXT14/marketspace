@@ -182,6 +182,7 @@ module.exports = {
       },
       fontWeight: {
         extrablack: '950',
+        ...fontFamily,
       },
       fontSize: {
         '2xs': '10px',

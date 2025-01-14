@@ -14,6 +14,7 @@
     "@expo-google-fonts/karla": "^0.2.3",
     "@expo/html-elements": "^0.4.2",
     "@gluestack-ui/actionsheet": "^0.2.46",
+    "@gluestack-ui/avatar": "^0.1.18",
     "@gluestack-ui/button": "^1.0.8",
     "@gluestack-ui/checkbox": "^0.1.33",
     "@gluestack-ui/form-control": "^0.1.19",
