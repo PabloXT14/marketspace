@@ -69,7 +69,7 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
         {/* OVERLAY */}
         {!isAdActive && (
           <>
-            <View className="absolute top-0 left-0 w-full h-full bg-black/30" />
+            <View className="absolute top-0 left-0 w-full h-full bg-gray-700/45" />
 
             <Text className="absolute bottom-2 left-2 text-white text-xs font-bold uppercase w-full">
               Anúncio desativado
