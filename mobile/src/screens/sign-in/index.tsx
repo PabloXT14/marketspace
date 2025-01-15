@@ -1,15 +1,24 @@
-import { View } from 'react-native'
+import { useState } from 'react'
+import { View, TouchableOpacity } from 'react-native'
+import { Eye, EyeSlash } from 'phosphor-react-native'
 
 import { VStack } from '@/components/ui/vstack'
 import { Text } from '@/components/ui/text'
 
-import { Input } from '@/components/input'
+import { Input, InputField } from '@/components/input'
 import { Button, ButtonText } from '@/components/button'
 
 import Logo from '@/assets/logo.svg'
 import MarketspaceText from '@/assets/marketspace-text.svg'
+import { colors } from '@/styles/colors'
 
 export function SignIn() {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+
+  function handleTogglePasswordVisibility() {
+    setIsPasswordVisible(prevState => !prevState)
+  }
+
   return (
     <VStack className="flex-1 bg-gray-100">
       {/* TOP */}
@@ -32,8 +41,33 @@ export function SignIn() {
             Acesse sua conta
           </Text>
 
-          <Input placeholder="E-mail" />
-          <Input placeholder="Senha" />
+          <Input>
+            <InputField
+              placeholder="E-mail"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </Input>
+
+          <Input>
+            <InputField
+              placeholder="Senha"
+              secureTextEntry={!isPasswordVisible}
+              onSubmitEditing={() => {}}
+              returnKeyType="send"
+            />
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={handleTogglePasswordVisibility}
+            >
+              {isPasswordVisible ? (
+                <EyeSlash size={20} color={colors.gray[500]} />
+              ) : (
+                <Eye size={20} color={colors.gray[500]} />
+              )}
+            </TouchableOpacity>
+          </Input>
 
           <Button className="mt-8">
             <ButtonText>Entrar</ButtonText>

@@ -1,7 +1,10 @@
-import type { ComponentProps } from 'react'
+import type { ComponentProps, ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
 
-import { Input as GlueStackInput, InputField } from '@/components/ui/input'
+import {
+  Input as GlueStackInput,
+  InputField as GlueStackInputField,
+} from '@/components/ui/input'
 import {
   FormControl,
   FormControlError,
@@ -10,17 +13,18 @@ import {
 
 import { colors } from '@/styles/colors'
 
-type InputProps = ComponentProps<typeof InputField> & {
+type InputProps = {
+  children?: ReactNode
   errorMessage?: string | null
   isInvalid?: boolean
   isReadOnly?: boolean
 }
 
-export function Input({
+function Input({
+  children,
   errorMessage = null,
   isInvalid = false,
   isReadOnly = false,
-  ...props
 }: InputProps) {
   const invalid = !!errorMessage || isInvalid
 
@@ -28,19 +32,13 @@ export function Input({
     <FormControl isInvalid={invalid} className="w-full">
       <GlueStackInput
         className={twMerge(
-          'h-14 border border-transparent rounded-lg data-[focus=true]:border-gray-500',
+          'h-14 w-full px-4 flex-row items-center gap-2 bg-gray-100 border border-transparent rounded-lg data-[focus=true]:border-gray-500',
           isReadOnly && 'opacity-40'
         )}
         isReadOnly={isReadOnly}
         focusable
       >
-        <InputField
-          className={twMerge(
-            'px-4 text-gray-600 bg-gray-100 text-base font-regular leading-snug rounded-lg'
-          )}
-          placeholderTextColor={colors.gray[400]}
-          {...props}
-        />
+        {children}
       </GlueStackInput>
 
       <FormControlError>
@@ -51,3 +49,19 @@ export function Input({
     </FormControl>
   )
 }
+
+type InputFieldProps = ComponentProps<typeof GlueStackInputField>
+
+function InputField({ ...props }: InputFieldProps) {
+  return (
+    <GlueStackInputField
+      className={twMerge(
+        'flex-1 p-0 text-gray-600 text-base font-regular rounded-lg'
+      )}
+      placeholderTextColor={colors.gray[400]}
+      {...props}
+    />
+  )
+}
+
+export { Input, InputField }
