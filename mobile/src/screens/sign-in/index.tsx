@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Eye, EyeSlash } from 'phosphor-react-native'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 
 import { VStack } from '@/components/ui/vstack'
 import { Text } from '@/components/ui/text'
@@ -12,11 +15,34 @@ import Logo from '@/assets/logo.svg'
 import MarketspaceText from '@/assets/marketspace-text.svg'
 import { colors } from '@/styles/colors'
 
+const FormSchema = z.object({
+  email: z
+    .string({ required_error: 'E-mail obrigatório' })
+    .email('E-mail invalido'),
+  password: z
+    .string({ required_error: 'Senha obrigatória' })
+    .min(6, 'A senha deve ter no mínimo 6 caracteres'),
+})
+
+type FormData = z.infer<typeof FormSchema>
+
 export function SignIn() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(FormSchema),
+  })
+
   function handleTogglePasswordVisibility() {
     setIsPasswordVisible(prevState => !prevState)
+  }
+
+  async function handleSignIn(data: FormData) {
+    console.log(data)
   }
 
   return (
@@ -41,35 +67,51 @@ export function SignIn() {
             Acesse sua conta
           </Text>
 
-          <Input>
-            <InputField
-              placeholder="E-mail"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </Input>
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { value, onChange } }) => (
+              <Input errorMessage={errors.email?.message}>
+                <InputField
+                  placeholder="E-mail"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              </Input>
+            )}
+          />
 
-          <Input>
-            <InputField
-              placeholder="Senha"
-              secureTextEntry={!isPasswordVisible}
-              onSubmitEditing={() => {}}
-              returnKeyType="send"
-            />
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { value, onChange } }) => (
+              <Input errorMessage={errors.password?.message}>
+                <InputField
+                  placeholder="Senha"
+                  secureTextEntry={!isPasswordVisible}
+                  returnKeyType="send"
+                  value={value}
+                  onChangeText={onChange}
+                  onSubmitEditing={() => handleSubmit(handleSignIn)}
+                />
 
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={handleTogglePasswordVisibility}
-            >
-              {isPasswordVisible ? (
-                <EyeSlash size={20} color={colors.gray[500]} />
-              ) : (
-                <Eye size={20} color={colors.gray[500]} />
-              )}
-            </TouchableOpacity>
-          </Input>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={handleTogglePasswordVisibility}
+                >
+                  {isPasswordVisible ? (
+                    <EyeSlash size={20} color={colors.gray[500]} />
+                  ) : (
+                    <Eye size={20} color={colors.gray[500]} />
+                  )}
+                </TouchableOpacity>
+              </Input>
+            )}
+          />
 
-          <Button className="mt-8">
+          <Button className="mt-8" onPress={handleSubmit(handleSignIn)}>
             <ButtonText>Entrar</ButtonText>
           </Button>
         </VStack>
