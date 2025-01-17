@@ -1,3 +1,4 @@
+import { SafeAreaView } from 'react-native-safe-area-context'
 import {
   useFonts,
   Karla_400Regular,
@@ -7,6 +8,7 @@ import {
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider'
 import { Loading } from '@/components/loading'
 import { SignIn } from './screens/sign-in'
+import { SignUp } from './screens/sign-up'
 
 import '../global.css'
 
@@ -18,7 +20,9 @@ export default function App() {
 
   return (
     <GluestackUIProvider mode="light">
-      {fontsLoaded ? <SignIn /> : <Loading />}
+      <SafeAreaView className="flex-1">
+        {fontsLoaded ? <SignUp /> : <Loading />}
+      </SafeAreaView>
     </GluestackUIProvider>
   )
 }
