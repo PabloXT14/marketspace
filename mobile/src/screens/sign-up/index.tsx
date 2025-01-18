@@ -202,7 +202,7 @@ export function SignUp() {
         </VStack>
 
         {/* BOTTOM */}
-        <VStack className="py-14 px-12 gap-4">
+        <VStack className="pt-14 pb-20 px-12 gap-4">
           <Text className="text-center text-sm font-regular text-gray-600 leading-snug">
             Já tem uma conta?
           </Text>
