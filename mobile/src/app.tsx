@@ -8,8 +8,9 @@ import {
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider'
 import { Loading } from '@/components/loading'
-import { SignIn } from './screens/sign-in'
-import { SignUp } from './screens/sign-up'
+import { SignIn } from '@/screens/sign-in'
+import { SignUp } from '@/screens/sign-up'
+import { Home } from '@/screens/home'
 
 import '../global.css'
 
@@ -27,7 +28,7 @@ export default function App() {
         translucent
       />
       <SafeAreaView className="flex-1 bg-gray-200">
-        {fontsLoaded ? <SignUp /> : <Loading />}
+        {fontsLoaded ? <Home /> : <Loading />}
       </SafeAreaView>
     </GluestackUIProvider>
   )
