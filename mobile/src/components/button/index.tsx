@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/button'
 
 const buttonStyle = tv({
-  base: 'flex-row items-center justify-center gap-2 w-full p-3 rounded-lg min-h-14 data-[active=true]:bg-inherit data-[active=true]:opacity-70',
+  base: 'flex-row items-center justify-center gap-2 w-full py-3 px-4 rounded-lg min-h-14 data-[active=true]:bg-inherit data-[active=true]:opacity-70',
   variants: {
     type: {
       black: 'bg-gray-700',
