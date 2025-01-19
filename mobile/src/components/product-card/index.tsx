@@ -6,16 +6,10 @@ import { Box } from '@/components/ui/box'
 import { Text } from '@/components/ui/text'
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar'
 
+import type { ProductDTO } from '@/dtos/product'
+
 type ProductCardProps = ComponentProps<typeof Box> & {
-  data: {
-    title: string
-    price: number
-    imageUrl: string
-    condition: 'new' | 'used'
-    seller: string
-    sellerImageUrl: string
-    isAdActive: boolean
-  }
+  data: ProductDTO
 }
 
 export function ProductCard({ data, className, ...props }: ProductCardProps) {
