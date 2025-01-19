@@ -2,6 +2,7 @@ import { VStack } from '@/components/ui/vstack'
 
 import { Header } from '@/components/screens/home/header'
 import { Sell } from '@/components/screens/home/sell'
+import { Items } from '@/components/screens/home/items'
 
 export function Home() {
   return (
@@ -9,6 +10,8 @@ export function Home() {
       <Header />
 
       <Sell />
+
+      <Items />
     </VStack>
   )
 }
