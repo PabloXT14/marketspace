@@ -1,11 +1,14 @@
+import { useState } from 'react'
+import { FlatList } from 'react-native'
+
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
 
-import { Search } from './search'
-import { FlatList } from 'react-native'
-
 import type { ProductDTO } from '@/dtos/product'
+
 import { ProductCard } from '@/components/product-card'
+import { Search } from './search'
+import { ListEmpty } from '@/components/list-empty'
 
 const PRODUCTS: ProductDTO[] = [
   {
@@ -107,6 +110,8 @@ const PRODUCTS: ProductDTO[] = [
 ]
 
 export function Items() {
+  const [products, setProducts] = useState<ProductDTO[]>(PRODUCTS)
+
   return (
     <VStack className="flex-1 gap-6">
       <VStack className="gap-3">
@@ -121,15 +126,25 @@ export function Items() {
       {/* PRODUCTS */}
       <VStack className="flex-1">
         <FlatList
-          data={PRODUCTS}
+          data={products}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <ProductCard data={item} className="flex-1" />
           )}
           numColumns={2}
           columnWrapperClassName="gap-6"
-          contentContainerClassName="gap-6 pb-28"
+          contentContainerStyle={
+            products.length === 0
+              ? { flex: 1 }
+              : {
+                  gap: 20,
+                  paddingBottom: 100,
+                }
+          }
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <ListEmpty message="Nenhum produto encontrado" />
+          )}
         />
       </VStack>
     </VStack>
