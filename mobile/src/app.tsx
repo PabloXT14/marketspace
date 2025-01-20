@@ -1,5 +1,7 @@
 import { StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import {
   useFonts,
   Karla_400Regular,
@@ -27,9 +29,14 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      <SafeAreaView className="flex-1 bg-gray-200">
-        {fontsLoaded ? <Home /> : <Loading />}
-      </SafeAreaView>
+
+      <GestureHandlerRootView className="flex-1">
+        <BottomSheetModalProvider>
+          <SafeAreaView className="flex-1 bg-gray-200">
+            {fontsLoaded ? <Home /> : <Loading />}
+          </SafeAreaView>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </GluestackUIProvider>
   )
 }

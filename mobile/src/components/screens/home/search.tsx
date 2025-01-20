@@ -4,6 +4,7 @@ import { MagnifyingGlass, Sliders } from 'phosphor-react-native'
 import { Input, InputField } from '@/components/input'
 
 import { colors } from '@/styles/colors'
+import { Filter } from './filter'
 
 export function Search() {
   return (
@@ -17,9 +18,11 @@ export function Search() {
       {/* DIVIDER */}
       <View className="w-px h-6 mx-2 bg-gray-400" />
 
-      <TouchableOpacity>
+      {/* <TouchableOpacity>
         <Sliders size={20} color={colors.gray[600]} weight="bold" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+
+      <Filter />
     </Input>
   )
 }
