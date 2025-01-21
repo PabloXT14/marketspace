@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { TouchableOpacity, useWindowDimensions } from 'react-native'
 import { Sliders, X } from 'phosphor-react-native'
 import {
@@ -37,6 +37,14 @@ export function Filter() {
     min: dimensions.height - 230,
     max: dimensions.height - 230,
   }
+
+  const [paymentMethods, setPaymentMethods] = useState([
+    'boleto',
+    'pix',
+    'dinheiro',
+    'credit-card',
+    'back-deposit',
+  ])
 
   const handlePresentModalPress = () => {
     bottomSheetModalRef.current?.present()
@@ -123,13 +131,8 @@ export function Filter() {
               </Text>
 
               <CheckboxGroup
-                value={[
-                  'boleto',
-                  'pix',
-                  'dinheiro',
-                  'credit-card',
-                  'back-deposit',
-                ]}
+                value={paymentMethods}
+                onChange={setPaymentMethods}
                 className="gap-2"
               >
                 <Checkbox value="boleto" label="Boleto" />

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { FlatList } from 'react-native'
+import { FlatList, TouchableOpacity, View } from 'react-native'
+import { MagnifyingGlass } from 'phosphor-react-native'
 
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
@@ -7,8 +8,11 @@ import { VStack } from '@/components/ui/vstack'
 import type { ProductDTO } from '@/dtos/product'
 
 import { ProductCard } from '@/components/product-card'
-import { Search } from './search'
 import { ListEmpty } from '@/components/list-empty'
+import { Input, InputField } from '@/components/input'
+import { Filter } from './filter'
+
+import { colors } from '@/styles/colors'
 
 const PRODUCTS: ProductDTO[] = [
   {
@@ -120,7 +124,19 @@ export function Items() {
           Compre produtos variados
         </Text>
 
-        <Search />
+        {/* SEARCH */}
+        <Input>
+          <InputField placeholder="Buscar anúncio" />
+
+          <TouchableOpacity>
+            <MagnifyingGlass size={20} color={colors.gray[600]} weight="bold" />
+          </TouchableOpacity>
+
+          {/* DIVIDER */}
+          <View className="w-px h-6 mx-2 bg-gray-400" />
+
+          <Filter />
+        </Input>
       </VStack>
 
       {/* PRODUCTS */}
