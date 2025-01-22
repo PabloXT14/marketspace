@@ -3,9 +3,9 @@ import { ArrowLeft } from 'phosphor-react-native'
 
 import { VStack } from '@/components/ui/vstack'
 import { Image } from '@/components/ui/image'
-import { Text } from '@/components/ui/text'
 
 import { ProductInfo } from '@/components/screens/ad-details/product-info'
+import { Footer } from '@/components/screens/ad-details/footer'
 
 import { colors } from '@/styles/colors'
 
@@ -30,10 +30,7 @@ export function AdDetails() {
         <ProductInfo />
       </ScrollView>
 
-      {/* FOOTER */}
-      <VStack className="bg-gray-100">
-        <Text>Footer</Text>
-      </VStack>
+      <Footer />
     </VStack>
   )
 }
