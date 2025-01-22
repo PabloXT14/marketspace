@@ -13,6 +13,7 @@ import { Loading } from '@/components/loading'
 import { SignIn } from '@/screens/sign-in'
 import { SignUp } from '@/screens/sign-up'
 import { Home } from '@/screens/home'
+import { AdDetails } from './screens/ad-details'
 
 import '../global.css'
 
@@ -33,7 +34,7 @@ export default function App() {
       <GestureHandlerRootView className="flex-1">
         <BottomSheetModalProvider>
           <SafeAreaView className="flex-1 bg-gray-200">
-            {fontsLoaded ? <Home /> : <Loading />}
+            {fontsLoaded ? <AdDetails /> : <Loading />}
           </SafeAreaView>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
