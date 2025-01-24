@@ -1,15 +1,9 @@
-import { useRef } from 'react'
-import { ScrollView, TouchableOpacity, Dimensions, View } from 'react-native'
-import { useSharedValue } from 'react-native-reanimated'
-import Carousel, {
-  Pagination,
-  type ICarouselInstance,
-} from 'react-native-reanimated-carousel'
+import { ScrollView, TouchableOpacity } from 'react-native'
 import { ArrowLeft } from 'phosphor-react-native'
 
 import { VStack } from '@/components/ui/vstack'
-import { Image } from '@/components/ui/image'
 
+import { ProductImagesCarousel } from '@/components/screens/ad-details/product-images-carousel'
 import { ProductInfo } from '@/components/screens/ad-details/product-info'
 import { Footer } from '@/components/screens/ad-details/footer'
 
@@ -31,17 +25,6 @@ const PRODUCT_IMAGES = [
 ]
 
 export function AdDetails() {
-  const carouselRef = useRef<ICarouselInstance>(null)
-
-  const progress = useSharedValue(0)
-
-  function onPressPagination(index: number) {
-    carouselRef.current?.scrollTo({
-      count: index - progress.value,
-      animated: true,
-    })
-  }
-
   return (
     <VStack className="flex-1">
       {/* GO BACK BUTTON */}
@@ -49,54 +32,7 @@ export function AdDetails() {
         <ArrowLeft size={24} color={colors.gray[700]} />
       </TouchableOpacity>
 
-      {/* IMAGE CAROUSEL */}
-      <View style={{ height: 280, position: 'relative' }}>
-        <Carousel
-          ref={carouselRef}
-          data={PRODUCT_IMAGES}
-          height={280}
-          width={Dimensions.get('screen').width}
-          loop={true}
-          autoPlayInterval={2000}
-          pagingEnabled={true}
-          snapEnabled={true}
-          renderItem={({ item }) => (
-            <Image
-              source={{
-                uri: item.uri,
-              }}
-              alt="Product image"
-              className="w-full h-full object-cover"
-            />
-          )}
-          onProgressChange={progress}
-        />
-
-        <Pagination.Basic
-          progress={progress}
-          data={PRODUCT_IMAGES.map(item => item)}
-          dotStyle={{
-            flex: 1,
-            height: 4,
-            backgroundColor: colors.gray['100'],
-            opacity: 0.5,
-            borderRadius: 9999,
-          }}
-          activeDotStyle={{
-            overflow: 'hidden',
-            // backgroundColor: colors.blue[500],
-            opacity: 0.75,
-          }}
-          containerStyle={{
-            position: 'absolute',
-            gap: 4,
-            bottom: 4,
-            paddingHorizontal: 4,
-          }}
-          horizontal
-          // onPress={onPressPagination}
-        />
-      </View>
+      <ProductImagesCarousel data={PRODUCT_IMAGES} />
 
       <ScrollView>
         <ProductInfo />
