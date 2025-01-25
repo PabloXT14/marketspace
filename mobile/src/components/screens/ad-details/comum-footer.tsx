@@ -7,13 +7,23 @@ import { Button, ButtonText } from '@/components/button'
 
 import { colors } from '@/styles/colors'
 
-export function Footer() {
+type ComumFooterProps = {
+  productPrice: number
+}
+
+export function ComumFooter({ productPrice }: ComumFooterProps) {
   return (
     <HStack className="bg-gray-100 px-6 pt-5 pb-7 items-center justify-between">
       <HStack className="gap-1 items-baseline">
         <Text className="text-blue-800 text-sm font-bold leading-snug">R$</Text>
         <Text className="text-blue-800 text-2xl font-bold leading-snug">
-          120,00
+          {Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          })
+            .format(productPrice)
+            .replace('R$', '')
+            .trim()}
         </Text>
       </HStack>
 

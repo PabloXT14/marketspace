@@ -1,10 +1,20 @@
+export type AllowedPaymentMethods =
+  | 'pix'
+  | 'card'
+  | 'deposit'
+  | 'cash'
+  | 'boleto'
+
 export type ProductDTO = {
   id: string
-  title: string
+  name: string
+  description: string
+  is_new: boolean
   price: number
-  imageUrl: string
-  condition: 'new' | 'used'
-  seller: string
-  sellerImageUrl: string
-  isAdActive: boolean
+  accept_trade: boolean
+  user_id: string
+  is_active: boolean
+  payment_methods: AllowedPaymentMethods[]
+  created_at: string
+  updated_at: string
 }

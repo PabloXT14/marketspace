@@ -7,15 +7,53 @@ import { VStack } from '@/components/ui/vstack'
 import { UserPhoto } from '@/components/user-photo'
 import { Tag, TagText } from '@/components/tag'
 
+import type { ProductDTO } from '@/dtos/product'
+
 import { colors } from '@/styles/colors'
 
-export function ProductInfo() {
+type ProductInfoProps = {
+  data: Pick<
+    ProductDTO,
+    | 'name'
+    | 'description'
+    | 'price'
+    | 'is_new'
+    | 'accept_trade'
+    | 'user_id'
+    | 'payment_methods'
+  >
+}
+
+const paymentMethodsOptions = {
+  boleto: {
+    icon: <Barcode size={18} color={colors.gray[700]} />,
+    label: 'Boleto',
+  },
+  pix: {
+    icon: <QrCode size={18} color={colors.gray[700]} />,
+    label: 'Pix',
+  },
+  cash: {
+    icon: <Money size={18} color={colors.gray[700]} />,
+    label: 'Dinheiro',
+  },
+  card: {
+    icon: <CreditCard size={18} color={colors.gray[700]} />,
+    label: 'Cartão de crédito',
+  },
+  deposit: {
+    icon: <Bank size={18} color={colors.gray[700]} />,
+    label: 'Depósito bancário',
+  },
+}
+
+export function ProductInfo({ data }: ProductInfoProps) {
   return (
     <VStack className="flex-1 p-6 gap-6">
       {/* OWNER */}
       <HStack className="items-center gap-2">
         <UserPhoto
-          source={'https://github.com/orodrigogo.png'}
+          source="https://github.com/orodrigogo.png"
           alt="User photo"
           size="xs"
         />
@@ -28,7 +66,9 @@ export function ProductInfo() {
       {/* DESCRIPTION */}
       <VStack className="gap-2 items-start">
         <Tag variant="secondary">
-          <TagText variant="secondary">Novo</TagText>
+          <TagText variant="secondary">
+            {data.is_new ? 'NOVO' : 'USADO'}
+          </TagText>
         </Tag>
 
         <HStack className="w-full items-center justify-between">
@@ -36,24 +76,27 @@ export function ProductInfo() {
             className="flex-1 text-gray-700 text-xl font-bold leading-snug"
             numberOfLines={1}
           >
-            Bicicleta
+            {data.name}
           </Text>
 
-          <HStack className="gap-1 items-center">
+          <HStack className="gap-1 items-baseline">
             <Text className="text-blue-500 text-sm font-bold leading-snug">
               R$
             </Text>
             <Text className="text-blue-500 text-xl font-bold leading-snug">
-              120,00
+              {Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+              })
+                .format(data.price)
+                .replace('R$', '')
+                .trim()}
             </Text>
           </HStack>
         </HStack>
 
         <Text className="text-gray-600 text-sm font-regular leading-snug">
-          Cras congue cursus in tortor sagittis placerat nunc, tellus arcu.
-          Vitae ante leo eget maecenas urna mattis cursus. Mauris metus amet
-          nibh mauris mauris accumsan, euismod. Aenean leo nunc, purus iaculis
-          in aliquam.
+          {data.description}
         </Text>
       </VStack>
 
@@ -64,7 +107,7 @@ export function ProductInfo() {
             Aceita troca?
           </Text>
           <Text className="text-gray-600 text-sm font-regular leading-snug">
-            Sim
+            {data.accept_trade ? 'Sim' : 'Não'}
           </Text>
         </HStack>
 
@@ -73,40 +116,18 @@ export function ProductInfo() {
             Meios de pagamento:
           </Text>
 
-          <HStack className="gap-2 items-center">
-            <Barcode size={18} color={colors.gray[700]} />
-            <Text className="text-gray-600 text-sm font-regular leading-snug">
-              Boleto
-            </Text>
-          </HStack>
+          {data.payment_methods.map(paymentMethod => {
+            if (!paymentMethodsOptions[paymentMethod]) return null
 
-          <HStack className="gap-2 items-center">
-            <QrCode size={18} color={colors.gray[700]} />
-            <Text className="text-gray-600 text-sm font-regular leading-snug">
-              Pix
-            </Text>
-          </HStack>
-
-          <HStack className="gap-2 items-center">
-            <Money size={18} color={colors.gray[700]} />
-            <Text className="text-gray-600 text-sm font-regular leading-snug">
-              Dinheiro
-            </Text>
-          </HStack>
-
-          <HStack className="gap-2 items-center">
-            <CreditCard size={18} color={colors.gray[700]} />
-            <Text className="text-gray-600 text-sm font-regular leading-snug">
-              Cartão de Crédito
-            </Text>
-          </HStack>
-
-          <HStack className="gap-2 items-center">
-            <Bank size={18} color={colors.gray[700]} />
-            <Text className="text-gray-600 text-sm font-regular leading-snug">
-              Deposito Bancário
-            </Text>
-          </HStack>
+            return (
+              <HStack key={paymentMethod} className="gap-2 items-center">
+                {paymentMethodsOptions[paymentMethod]?.icon}
+                <Text className="text-gray-600 text-sm font-regular leading-snug">
+                  {paymentMethodsOptions[paymentMethod]?.label}
+                </Text>
+              </HStack>
+            )
+          })}
         </VStack>
       </VStack>
     </VStack>
