@@ -9,21 +9,18 @@ import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar'
 import type { ProductDTO } from '@/dtos/product'
 
 type ProductCardProps = ComponentProps<typeof Box> & {
-  data: ProductDTO
+  data: ProductDTO & {
+    seller: string
+    sellerImageUrl: string
+    imageUrl: string
+  }
 }
 
 export function ProductCard({ data, className, ...props }: ProductCardProps) {
-  const {
-    title,
-    price,
-    imageUrl,
-    condition,
-    seller,
-    sellerImageUrl,
-    isAdActive,
-  } = data
+  const { name, price, imageUrl, is_new, is_active, seller, sellerImageUrl } =
+    data
 
-  const conditionText = condition === 'new' ? 'Novo' : 'Usado'
+  const conditionText = is_new ? 'Novo' : 'Usado'
 
   const priceFormatted = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -36,7 +33,7 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
       <View className="relative rounded-lg overflow-hidden">
         <Image
           source={{ uri: imageUrl }}
-          alt={title}
+          alt={name}
           className="w-full h-28 object-cover rounded-lg"
         />
 
@@ -52,7 +49,7 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
         <View
           className={twMerge(
             'absolute top-1.5 right-1.5 bg-blue-800 rounded-full px-3 py-1',
-            condition === 'used' && 'bg-gray-600'
+            !is_new && 'bg-gray-600'
           )}
         >
           <Text className="text-white text-xs font-bold uppercase">
@@ -61,7 +58,7 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
         </View>
 
         {/* OVERLAY */}
-        {!isAdActive && (
+        {!is_active && (
           <>
             <View className="absolute top-0 left-0 w-full h-full bg-gray-700/45" />
 
@@ -77,18 +74,18 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
         <Text
           className={twMerge(
             'text-gray-600 text-sm font-regular leading-snug',
-            !isAdActive && 'text-gray-400'
+            !is_active && 'text-gray-400'
           )}
           numberOfLines={1}
         >
-          {title}
+          {name}
         </Text>
 
-        <View className="flex-row items-center justify-start">
+        <View className="flex-row items-baseline justify-start">
           <Text
             className={twMerge(
               'text-gray-700 text-xs font-bold leading-snug',
-              !isAdActive && 'text-gray-400'
+              !is_active && 'text-gray-400'
             )}
           >
             R$
@@ -96,7 +93,7 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
           <Text
             className={twMerge(
               'text-gray-700 text-base font-bold leading-snug',
-              !isAdActive && 'text-gray-400'
+              !is_active && 'text-gray-400'
             )}
           >
             {priceFormatted.replace('R$', '')}

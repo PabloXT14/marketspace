@@ -34,7 +34,7 @@ export default function App() {
       <GestureHandlerRootView className="flex-1">
         <BottomSheetModalProvider>
           <SafeAreaView className="flex-1 bg-gray-200">
-            {fontsLoaded ? <AdDetails /> : <Loading />}
+            {fontsLoaded ? <Home /> : <Loading />}
           </SafeAreaView>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>

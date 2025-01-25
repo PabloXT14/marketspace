@@ -13,108 +13,146 @@ import { Input, InputField } from '@/components/input'
 import { Filter } from './filter'
 
 import { colors } from '@/styles/colors'
+import { twMerge } from 'tailwind-merge'
+import React from 'react'
 
-const PRODUCTS: ProductDTO[] = [
+type Product = ProductDTO & {
+  seller: string
+  sellerImageUrl: string
+  imageUrl: string
+}
+
+const PRODUCTS: Product[] = [
   {
     id: '1',
-    title: 'Tênis vermelho',
+    name: 'Tênis vermelho',
+    description: 'Tênis de corrida',
     price: 59.9,
     imageUrl:
       'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    condition: 'used',
+    is_new: false,
+    is_active: true,
+    accept_trade: false,
+    user_id: '1',
     seller: 'Vendedor 1',
     sellerImageUrl:
       'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isAdActive: true,
+    payment_methods: ['card', 'boleto'],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   },
   {
     id: '2',
-    title: 'Bicicleta',
+    name: 'Bicicleta',
+    description: 'Bicicleta de montanha',
     price: 120,
     imageUrl:
       'https://plus.unsplash.com/premium_photo-1678718713393-2b88cde9605b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    condition: 'new',
+    is_new: true,
+    is_active: true,
+    accept_trade: true,
+    user_id: '2',
     seller: 'Vendedor 2',
     sellerImageUrl:
       'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isAdActive: true,
+    payment_methods: ['card', 'boleto'],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   },
   {
     id: '3',
-    title: 'Camiseta',
+    name: 'Camiseta',
+    description: 'Camiseta de futebol',
     price: 59.9,
     imageUrl:
       'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    condition: 'used',
+    is_new: false,
+    is_active: false,
+    accept_trade: false,
+    user_id: '3',
     seller: 'Vendedor 3',
     sellerImageUrl:
       'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isAdActive: false,
+    payment_methods: ['card', 'boleto'],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   },
   {
     id: '4',
-    title: 'Bicicleta',
+    name: 'Bicicleta',
+    description: 'Bicicleta de montanha',
     price: 120,
     imageUrl:
       'https://plus.unsplash.com/premium_photo-1678718713393-2b88cde9605b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    condition: 'new',
+    is_new: true,
+    is_active: true,
+    accept_trade: true,
+    user_id: '4',
     seller: 'Vendedor 4',
     sellerImageUrl:
       'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isAdActive: true,
+    payment_methods: ['card', 'boleto'],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   },
   {
     id: '5',
-    title: 'Camiseta',
+    name: 'Camiseta',
+    description: 'Camiseta de futebol',
     price: 59.9,
     imageUrl:
       'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    condition: 'used',
+    is_new: false,
+    is_active: true,
+    accept_trade: false,
+    user_id: '5',
     seller: 'Vendedor 5',
     sellerImageUrl:
       'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isAdActive: true,
+    payment_methods: ['card', 'boleto'],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   },
   {
     id: '6',
-    title: 'Bicicleta',
+    name: 'Bicicleta',
+    description: 'Bicicleta de montanha',
     price: 120,
     imageUrl:
       'https://plus.unsplash.com/premium_photo-1678718713393-2b88cde9605b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    condition: 'new',
+    is_new: true,
+    is_active: true,
+    accept_trade: true,
+    user_id: '6',
     seller: 'Vendedor 6',
     sellerImageUrl:
       'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isAdActive: true,
+    payment_methods: ['card', 'boleto'],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   },
   {
     id: '7',
-    title: 'Camiseta',
+    name: 'Camiseta',
+    description: 'Camiseta de futebol',
     price: 59.9,
     imageUrl:
       'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    condition: 'used',
+    is_new: false,
+    is_active: true,
+    accept_trade: false,
+    user_id: '7',
     seller: 'Vendedor 7',
     sellerImageUrl:
       'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isAdActive: true,
-  },
-  {
-    id: '8',
-    title: 'Bicicleta',
-    price: 120,
-    imageUrl:
-      'https://plus.unsplash.com/premium_photo-1678718713393-2b88cde9605b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    condition: 'new',
-    seller: 'Vendedor 8',
-    sellerImageUrl:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isAdActive: true,
+    payment_methods: ['card', 'boleto'],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   },
 ]
 
 export function Items() {
-  const [products, setProducts] = useState<ProductDTO[]>(PRODUCTS)
+  const [products, setProducts] = useState<Product[]>(PRODUCTS)
 
   return (
     <VStack className="flex-1 gap-6">
@@ -144,9 +182,20 @@ export function Items() {
         <FlatList
           data={products}
           keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <ProductCard data={item} className="flex-1" />
-          )}
+          renderItem={({ item, index }) => {
+            // CHECK IF THE NUMBER OF PRODUCTS IS ODD AND IS THE LAST ITEM
+            if (products.length % 2 !== 0 && index === products.length - 1) {
+              return (
+                <>
+                  <ProductCard data={item} className="flex-1" />
+
+                  <View className="flex-1" />
+                </>
+              )
+            }
+
+            return <ProductCard data={item} className="flex-1" />
+          }}
           numColumns={2}
           columnWrapperClassName="gap-6"
           contentContainerStyle={
