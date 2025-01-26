@@ -28,7 +28,7 @@ function SelectTrigger({
   return (
     <UISelectTrigger
       className={twMerge(
-        'min-h-14 min-w-40 justify-between pr-3 border border-gray-400 rounded-lg',
+        'min-h-12 min-w-40 justify-between pr-3 border border-gray-300 rounded-lg',
         className
       )}
       {...props}
