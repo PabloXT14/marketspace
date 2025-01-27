@@ -18,6 +18,7 @@ type InputProps = {
   errorMessage?: string | null
   isInvalid?: boolean
   isReadOnly?: boolean
+  className?: string
 }
 
 function Input({
@@ -25,6 +26,7 @@ function Input({
   errorMessage = null,
   isInvalid = false,
   isReadOnly = false,
+  className,
 }: InputProps) {
   const invalid = !!errorMessage || isInvalid
 
@@ -32,8 +34,9 @@ function Input({
     <FormControl isInvalid={invalid} className="w-full">
       <GlueStackInput
         className={twMerge(
-          'h-14 w-full px-4 flex-row items-center gap-2 bg-gray-100 border border-transparent rounded-lg data-[focus=true]:border-gray-500',
-          isReadOnly && 'opacity-40'
+          'h-14 w-full p-4 flex-row items-center gap-2 bg-gray-100 border border-transparent rounded-lg data-[focus=true]:border-gray-500',
+          isReadOnly && 'opacity-40',
+          className
         )}
         isReadOnly={isReadOnly}
         focusable
@@ -52,11 +55,12 @@ function Input({
 
 type InputFieldProps = ComponentProps<typeof GlueStackInputField>
 
-function InputField({ ...props }: InputFieldProps) {
+function InputField({ className, ...props }: InputFieldProps) {
   return (
     <GlueStackInputField
       className={twMerge(
-        'flex-1 p-0 text-gray-600 text-base font-regular rounded-lg'
+        'flex-1 p-0 text-gray-600 text-base font-regular rounded-lg leading-none',
+        className
       )}
       placeholderTextColor={colors.gray[400]}
       {...props}

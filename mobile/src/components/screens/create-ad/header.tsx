@@ -13,7 +13,7 @@ type HeaderProps = ComponentProps<typeof HStack>
 export function Header({ className, ...props }: HeaderProps) {
   return (
     <HStack
-      className={twMerge('relative items-center px-6 mb-10', className)}
+      className={twMerge('relative items-center px-6 mb-6', className)}
       {...props}
     >
       <TouchableOpacity className="absolute left-6">
