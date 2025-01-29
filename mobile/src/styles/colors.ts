@@ -20,4 +20,8 @@ export const colors = {
   red: {
     400: '#EE7979',
   },
+
+  success: {
+    500: '#00B37E',
+  },
 }
