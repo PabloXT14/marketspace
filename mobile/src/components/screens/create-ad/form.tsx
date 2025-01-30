@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Plus, X } from 'phosphor-react-native'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
 
@@ -21,15 +24,49 @@ import { Switch } from '@/components/switch'
 
 const MAX_IMAGE_SIZE_MB = 5
 
+const FormSchema = z.object({
+  title: z
+    .string({ required_error: 'O titulo é obrigatório' })
+    .min(1, 'O titulo é obrigatório'),
+  description: z
+    .string({ required_error: 'A descrição é obrigatória' })
+    .min(1, 'A descrição é obrigatória'),
+  images: z
+    .array(z.string(), { required_error: 'Selecione pelo menos uma imagem' })
+    .min(1, 'Selecione pelo menos uma imagem'),
+  condition: z.enum(['new', 'used'], {
+    required_error: 'Selecione uma condição',
+  }),
+  price: z
+    .string({ required_error: 'O preço é obrigatório' })
+    .min(1, 'O preço é obrigatório'),
+  acceptTrade: z.boolean(),
+  paymentMethods: z
+    .array(z.string(), {
+      required_error: 'Selecione pelo menos um meio de pagamento',
+    })
+    .min(1, 'Selecione pelo menos um meio de pagamento'),
+})
+
+type FormData = z.infer<typeof FormSchema>
+
 export function Form() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      acceptTrade: false,
+      images: [],
+    },
+  })
+
   const toast = useToast()
 
-  const [radioSelected, setRadioSelected] = useState('')
-  const [paymentMethods, setPaymentMethods] = useState([])
-
-  const [images, setImages] = useState<string[]>([])
-
-  async function handleSelectImage() {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  async function handleSelectImage(currentImages: string[], onChange: any) {
     try {
       const photosSelected = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
@@ -65,7 +102,7 @@ export function Form() {
           })
         }
 
-        setImages(prevState => [...prevState, photoUri])
+        onChange([...currentImages, photoUri])
 
         toast.show({
           placement: 'top',
@@ -97,9 +134,11 @@ export function Form() {
     }
   }
 
-  function handleRemoveImage(image: string) {
-    setImages(prevState => prevState.filter(imageUrl => imageUrl !== image))
+  async function handleCreateAd(data: FormData) {
+    console.log(data)
   }
+
+  console.log('TEST2')
 
   return (
     <VStack className="flex-1">
@@ -119,36 +158,54 @@ export function Form() {
           </VStack>
 
           {/* UPLOAD */}
-          <HStack className="gap-2">
-            {images.map(image => (
-              <VStack
-                key={image}
-                className="relative size-28 rounded-lg overflow-hidden"
-              >
-                <Image
-                  source={{ uri: image }}
-                  alt="Product image"
-                  className="object-cover w-full h-full"
-                />
+          <Controller
+            control={control}
+            name="images"
+            render={({ field: { value: images, onChange } }) => (
+              <VStack className="gap-2">
+                <HStack className="gap-2">
+                  {images.map(image => (
+                    <VStack
+                      key={image}
+                      className="relative size-28 rounded-lg overflow-hidden"
+                    >
+                      <Image
+                        source={{ uri: image }}
+                        alt="Product image"
+                        className="object-cover w-full h-full"
+                      />
 
-                <TouchableOpacity
-                  className="absolute rounded-full p-1 bg-gray-600 top-1.5 right-1.5"
-                  onPress={() => handleRemoveImage(image)}
-                >
-                  <X size={16} color={colors.gray[100]} />
-                </TouchableOpacity>
+                      <TouchableOpacity
+                        className="absolute rounded-full p-1 bg-gray-600 top-1.5 right-1.5"
+                        onPress={() =>
+                          onChange(
+                            images.filter(imageUrl => imageUrl !== image)
+                          )
+                        }
+                      >
+                        <X size={16} color={colors.gray[100]} />
+                      </TouchableOpacity>
+                    </VStack>
+                  ))}
+
+                  {images.length < 3 && (
+                    <TouchableOpacity
+                      onPress={() => handleSelectImage(images, onChange)}
+                      className="size-28 rounded-lg bg-gray-300 items-center justify-center"
+                    >
+                      <Plus size={24} color={colors.gray[400]} />
+                    </TouchableOpacity>
+                  )}
+                </HStack>
+
+                {errors.images?.message && (
+                  <Text className="text-red-400 text-base font-regular leading-snug">
+                    {errors.images.message}
+                  </Text>
+                )}
               </VStack>
-            ))}
-
-            {images.length < 3 && (
-              <TouchableOpacity
-                onPress={handleSelectImage}
-                className="size-28 rounded-lg bg-gray-300 items-center justify-center"
-              >
-                <Plus size={24} color={colors.gray[400]} />
-              </TouchableOpacity>
             )}
-          </HStack>
+          />
         </VStack>
 
         {/* ABOUT PRODUCT */}
@@ -157,27 +214,62 @@ export function Form() {
             Sobre o produto
           </Text>
 
-          <Input>
-            <InputField placeholder="Título do anúncio" />
-          </Input>
+          <Controller
+            control={control}
+            name="title"
+            render={({ field: { value, onChange } }) => (
+              <Input errorMessage={errors.title?.message}>
+                <InputField
+                  placeholder="Título do anúncio"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              </Input>
+            )}
+          />
 
-          <Input className="h-40">
-            <InputField
-              placeholder="Descrição do produto"
-              multiline
-              numberOfLines={6}
-              className="align-top p-0"
-            />
-          </Input>
+          <Controller
+            control={control}
+            name="description"
+            render={({ field: { value, onChange } }) => (
+              <Input
+                className="h-40"
+                errorMessage={errors.description?.message}
+              >
+                <InputField
+                  placeholder="Descrição do produto"
+                  value={value}
+                  onChangeText={onChange}
+                  multiline
+                  numberOfLines={6}
+                  className="align-top p-0"
+                />
+              </Input>
+            )}
+          />
 
-          <RadioGroup
-            value={radioSelected}
-            onChange={setRadioSelected}
-            className="flex-row gap-5 items-center"
-          >
-            <Radio value="new" label="Produto novo" />
-            <Radio value="used" label="Produto usado" />
-          </RadioGroup>
+          <Controller
+            control={control}
+            name="condition"
+            render={({ field: { value, onChange } }) => (
+              <VStack className="items-start gap-1">
+                <RadioGroup
+                  value={value}
+                  onChange={onChange}
+                  className="flex-row gap-5 items-center"
+                >
+                  <Radio value="new" label="Produto novo" />
+                  <Radio value="used" label="Produto usado" />
+                </RadioGroup>
+
+                {errors.condition?.message && (
+                  <Text className="text-red-400 text-base font-regular leading-snug">
+                    {errors.condition.message}
+                  </Text>
+                )}
+              </VStack>
+            )}
+          />
         </VStack>
 
         {/* SELL */}
@@ -186,20 +278,37 @@ export function Form() {
             Venda
           </Text>
 
-          <Input>
-            <Text className="text-gray-700 text-base font-regular leading-snug">
-              R$
-            </Text>
+          <Controller
+            control={control}
+            name="price"
+            render={({ field: { value, onChange } }) => (
+              <Input errorMessage={errors.price?.message}>
+                <Text className="text-gray-700 text-base font-regular leading-snug">
+                  R$
+                </Text>
 
-            <InputField placeholder="Valor do produto" />
-          </Input>
+                <InputField
+                  placeholder="Valor do produto"
+                  value={value}
+                  onChangeText={onChange}
+                  keyboardType="numeric"
+                />
+              </Input>
+            )}
+          />
 
           <VStack className="items-start">
             <Text className="text-gray-600 text-sm font-bold leading-snug">
               Aceita troca?
             </Text>
 
-            <Switch />
+            <Controller
+              control={control}
+              name="acceptTrade"
+              render={({ field: { value, onChange } }) => (
+                <Switch value={value} onValueChange={onChange} />
+              )}
+            />
           </VStack>
 
           <VStack className="gap-3 items-start">
@@ -207,17 +316,28 @@ export function Form() {
               Meios de pagamento aceitos
             </Text>
 
-            <CheckboxGroup
-              value={paymentMethods}
-              onChange={setPaymentMethods}
-              className="gap-2"
-            >
-              <Checkbox value="boleto" label="Boleto" />
-              <Checkbox value="pix" label="Pix" />
-              <Checkbox value="cash" label="Dinheiro" />
-              <Checkbox value="card" label="Cartão de crédito" />
-              <Checkbox value="deposit" label="Depósito de volta" />
-            </CheckboxGroup>
+            <Controller
+              control={control}
+              name="paymentMethods"
+              render={({ field: { value, onChange } }) => (
+                <CheckboxGroup
+                  value={value}
+                  onChange={onChange}
+                  className="gap-2"
+                >
+                  <Checkbox value="boleto" label="Boleto" />
+                  <Checkbox value="pix" label="Pix" />
+                  <Checkbox value="cash" label="Dinheiro" />
+                  <Checkbox value="card" label="Cartão de crédito" />
+                  <Checkbox value="deposit" label="Depósito de volta" />
+                  {errors.paymentMethods?.message && (
+                    <Text className="text-red-400 text-base font-regular leading-snug">
+                      {errors.paymentMethods.message}
+                    </Text>
+                  )}
+                </CheckboxGroup>
+              )}
+            />
           </VStack>
         </VStack>
       </VStack>
@@ -228,7 +348,12 @@ export function Form() {
           <ButtonText type="gray">Cancelar</ButtonText>
         </Button>
 
-        <Button className="flex-1" type="black">
+        <Button
+          className="flex-1"
+          type="black"
+          isLoading={isSubmitting}
+          onPress={handleSubmit(handleCreateAd)}
+        >
           <ButtonText type="black">Avançar</ButtonText>
         </Button>
       </HStack>

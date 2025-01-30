@@ -45,7 +45,7 @@ function Input({
       </GlueStackInput>
 
       <FormControlError>
-        <FormControlErrorText className="text-red-400">
+        <FormControlErrorText className="text-red-400 font-regular">
           {errorMessage}
         </FormControlErrorText>
       </FormControlError>
