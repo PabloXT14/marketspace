@@ -23,6 +23,7 @@ import { colors } from '@/styles/colors'
 import { Switch } from '@/components/switch'
 
 const MAX_IMAGE_SIZE_MB = 5
+const USER_NAME = 'John Doe'
 
 const FormSchema = z.object({
   title: z
@@ -32,7 +33,14 @@ const FormSchema = z.object({
     .string({ required_error: 'A descrição é obrigatória' })
     .min(1, 'A descrição é obrigatória'),
   images: z
-    .array(z.string(), { required_error: 'Selecione pelo menos uma imagem' })
+    .array(
+      z.object({
+        name: z.string(),
+        uri: z.string(),
+        type: z.string(),
+      }),
+      { required_error: 'Selecione pelo menos uma imagem' }
+    )
     .min(1, 'Selecione pelo menos uma imagem'),
   condition: z.enum(['new', 'used'], {
     required_error: 'Selecione uma condição',
@@ -65,8 +73,11 @@ export function Form() {
 
   const toast = useToast()
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  async function handleSelectImage(currentImages: string[], onChange: any) {
+  async function handleSelectImage(
+    currentImages: FormData['images'],
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    onChange: any
+  ) {
     try {
       const photosSelected = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
@@ -102,7 +113,15 @@ export function Form() {
           })
         }
 
-        onChange([...currentImages, photoUri])
+        const fileExtension = photoUri.split('.').pop()
+
+        const photoFile = {
+          name: `${USER_NAME}-${Date.now()}.${fileExtension}`.toLowerCase(),
+          uri: photoUri,
+          type: `${photosSelected.assets[0].type}/${fileExtension}`,
+        }
+
+        onChange([...currentImages, photoFile])
 
         toast.show({
           placement: 'top',
@@ -138,8 +157,6 @@ export function Form() {
     console.log(data)
   }
 
-  console.log('TEST2')
-
   return (
     <VStack className="flex-1">
       {/* CONTENT */}
@@ -166,11 +183,11 @@ export function Form() {
                 <HStack className="gap-2">
                   {images.map(image => (
                     <VStack
-                      key={image}
+                      key={image.name}
                       className="relative size-28 rounded-lg overflow-hidden"
                     >
                       <Image
-                        source={{ uri: image }}
+                        source={{ uri: image.uri }}
                         alt="Product image"
                         className="object-cover w-full h-full"
                       />
@@ -178,9 +195,7 @@ export function Form() {
                       <TouchableOpacity
                         className="absolute rounded-full p-1 bg-gray-600 top-1.5 right-1.5"
                         onPress={() =>
-                          onChange(
-                            images.filter(imageUrl => imageUrl !== image)
-                          )
+                          onChange(images.filter(img => img.uri !== image.uri))
                         }
                       >
                         <X size={16} color={colors.gray[100]} />
