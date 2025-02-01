@@ -47,10 +47,10 @@ export function AdPreview() {
 
       {/* HEADER */}
       <VStack className="bg-blue-500 items-center pt-9 pb-4 gap-1">
-        <Text className="text-gray-100 text-md font-bold leading-snug">
+        <Text className="text-gray-100 text-base font-bold leading-snug">
           Pré visualização do anúncio
         </Text>
-        <Text className="text-gray-100 font-regular leading-snug">
+        <Text className="text-gray-100 text-sm font-regular leading-snug">
           É assim que seu produto vai aparecer!
         </Text>
       </VStack>
