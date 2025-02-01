@@ -16,6 +16,7 @@ import { Home } from '@/screens/home'
 import { AdDetails } from './screens/ad-details'
 import { MyAds } from './screens/my-ads'
 import { CreateAd } from './screens/create-ad'
+import { AdPreview } from './screens/ad-preview'
 
 import '../global.css'
 
@@ -36,7 +37,7 @@ export default function App() {
       <GestureHandlerRootView className="flex-1">
         <BottomSheetModalProvider>
           <SafeAreaView className="flex-1 bg-gray-200">
-            {fontsLoaded ? <CreateAd /> : <Loading />}
+            {fontsLoaded ? <AdPreview /> : <Loading />}
           </SafeAreaView>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
