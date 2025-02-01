@@ -4,10 +4,7 @@ import { ArrowLeft, PencilSimpleLine } from 'phosphor-react-native'
 import { VStack } from '@/components/ui/vstack'
 import { HStack } from '@/components/ui/hstack'
 
-import {
-  type ImageProps,
-  ProductImagesCarousel,
-} from '@/components/screens/ad-details/product-images-carousel'
+import { type ImageProps, ImagesCarousel } from '@/components/images-carousel'
 import { ProductInfo } from '@/components/screens/ad-details/product-info'
 import { ComumFooter } from '@/components/screens/ad-details/comum-footer'
 import { MyAdFooter } from '@/components/screens/ad-details/my-ad-footer'
@@ -65,7 +62,7 @@ export function AdDetails() {
         )}
       </HStack>
 
-      <ProductImagesCarousel data={PRODUCT.images} />
+      <ImagesCarousel data={PRODUCT.images} />
 
       <ScrollView>
         <ProductInfo data={PRODUCT} />

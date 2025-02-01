@@ -15,13 +15,13 @@ export type ImageProps = {
   uri: string
 }
 
-type ProductImagesCarouselProps = {
+type ImagesCarouselProps = {
   data: ImageProps[]
 }
 
 const SCREEN_WIDTH = Dimensions.get('screen').width
 
-export function ProductImagesCarousel({ data }: ProductImagesCarouselProps) {
+export function ImagesCarousel({ data }: ImagesCarouselProps) {
   const carouselRef = useRef<ICarouselInstance>(null)
 
   const progress = useSharedValue(0)
