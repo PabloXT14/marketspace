@@ -4,15 +4,18 @@ import { Eye, EyeSlash } from 'phosphor-react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useNavigation } from '@react-navigation/native'
 
 import { VStack } from '@/components/ui/vstack'
 import { Text } from '@/components/ui/text'
 
 import { Input, InputField } from '@/components/input'
 import { Button, ButtonText } from '@/components/button'
+import type { AuthRoutesNavigationProps } from '@/routes/auth.routes'
 
 import Logo from '@/assets/logo.svg'
 import MarketspaceText from '@/assets/marketspace-text.svg'
+
 import { colors } from '@/styles/colors'
 
 const FormSchema = z.object({
@@ -37,12 +40,18 @@ export function SignIn() {
     resolver: zodResolver(FormSchema),
   })
 
+  const navigation = useNavigation<AuthRoutesNavigationProps>()
+
   function handleTogglePasswordVisibility() {
     setIsPasswordVisible(prevState => !prevState)
   }
 
   async function handleSignIn(data: FormData) {
     console.log(data)
+  }
+
+  function handleNewAccount() {
+    navigation.navigate('signUp')
   }
 
   return (
@@ -127,7 +136,7 @@ export function SignIn() {
             Ainda não tem acesso?
           </Text>
 
-          <Button type="gray">
+          <Button type="gray" onPress={handleNewAccount}>
             <ButtonText type="gray">Criar uma conta</ButtonText>
           </Button>
         </VStack>

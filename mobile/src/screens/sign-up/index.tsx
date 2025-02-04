@@ -4,6 +4,7 @@ import { Eye, EyeSlash } from 'phosphor-react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useNavigation } from '@react-navigation/native'
 
 import { VStack } from '@/components/ui/vstack'
 import { Text } from '@/components/ui/text'
@@ -11,6 +12,7 @@ import { Text } from '@/components/ui/text'
 import { Input, InputField } from '@/components/input'
 import { Button, ButtonText } from '@/components/button'
 import { UserPhotoSelect } from '@/components/user-photo-select'
+import type { AuthRoutesNavigationProps } from '@/routes/auth.routes'
 
 import Logo from '@/assets/logo.svg'
 import { colors } from '@/styles/colors'
@@ -44,6 +46,12 @@ export function SignUp() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false)
+
+  const navigation = useNavigation<AuthRoutesNavigationProps>()
+
+  function handleGoBack() {
+    navigation.goBack()
+  }
 
   const {
     control,
@@ -207,7 +215,7 @@ export function SignUp() {
             Já tem uma conta?
           </Text>
 
-          <Button type="gray">
+          <Button type="gray" onPress={handleGoBack}>
             <ButtonText type="gray">Ir para o login</ButtonText>
           </Button>
         </VStack>
