@@ -6,7 +6,7 @@ import { Items } from '@/components/screens/home/items'
 
 export function Home() {
   return (
-    <VStack className="flex-1 gap-10 pt-9 px-6">
+    <VStack className="flex-1 gap-10 pt-9 px-6 bg-gray-200">
       <Header />
 
       <Sell />

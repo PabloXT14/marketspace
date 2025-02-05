@@ -1,12 +1,16 @@
 import { NavigationContainer } from '@react-navigation/native'
-import { AuthRoutes } from './auth.routes'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import { AuthRoutes } from './auth.routes'
+import { AppRoutes } from './app.routes'
+
 export function Routes() {
+  const isAuthenticated = true
+
   return (
     <SafeAreaView className="flex-1 bg-gray-200">
       <NavigationContainer>
-        <AuthRoutes />
+        {isAuthenticated ? <AppRoutes /> : <AuthRoutes />}
       </NavigationContainer>
     </SafeAreaView>
   )
