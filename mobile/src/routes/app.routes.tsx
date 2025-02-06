@@ -15,6 +15,8 @@ import { AdPreview } from '@/screens/ad-preview'
 import { EditAd } from '@/screens/edit-ad'
 
 import { colors } from '@/styles/colors'
+import { SignOutAlert } from '@/components/sign-out-alert'
+import { View } from 'react-native'
 
 type AppRoutesProps = {
   home: undefined
@@ -85,15 +87,13 @@ export function AppRoutes() {
 
       <Screen
         name="signOut"
-        component={() => null}
+        component={Home} // Nunca será exibido, serve apenas para cumprir a tipagem
         options={{
-          tabBarButton: props => (
-            <TouchableOpacity
-              {...props}
-              className="items-center justify-center"
-            >
-              <SignOut size={iconSize} color={colors.red[400]} />
-            </TouchableOpacity>
+          tabBarButton: () => (
+            // paddingTop necessário devido a um bug no react-native-bottom-tabs
+            <View style={{ paddingTop: 18 }}>
+              <SignOutAlert />
+            </View>
           ),
         }}
       />
