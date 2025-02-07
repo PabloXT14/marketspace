@@ -103,6 +103,7 @@ export function AppRoutes() {
         component={AdDetails}
         options={{
           tabBarItemStyle: { display: 'none' },
+          tabBarStyle: { display: 'none' },
         }}
       />
 
@@ -111,6 +112,7 @@ export function AppRoutes() {
         component={CreateAd}
         options={{
           tabBarItemStyle: { display: 'none' },
+          tabBarStyle: { display: 'none' },
         }}
       />
 
@@ -119,6 +121,7 @@ export function AppRoutes() {
         component={AdPreview}
         options={{
           tabBarItemStyle: { display: 'none' },
+          tabBarStyle: { display: 'none' },
         }}
       />
 
@@ -127,6 +130,7 @@ export function AppRoutes() {
         component={EditAd}
         options={{
           tabBarItemStyle: { display: 'none' },
+          tabBarStyle: { display: 'none' },
         }}
       />
     </Navigator>
