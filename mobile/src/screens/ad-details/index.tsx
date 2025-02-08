@@ -1,5 +1,6 @@
 import { ScrollView, TouchableOpacity } from 'react-native'
 import { ArrowLeft, PencilSimpleLine } from 'phosphor-react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import { VStack } from '@/components/ui/vstack'
 import { HStack } from '@/components/ui/hstack'
@@ -10,6 +11,7 @@ import { ComumFooter } from '@/components/screens/ad-details/comum-footer'
 import { MyAdFooter } from '@/components/screens/ad-details/my-ad-footer'
 
 import type { ProductDTO } from '@/dtos/product'
+import type { AppRoutesNavigationProps } from '@/routes/app.routes'
 
 import { colors } from '@/styles/colors'
 
@@ -43,20 +45,30 @@ const PRODUCT: ProductDTO & { images: ImageProps[] } = {
 }
 
 export function AdDetails() {
+  const navigate = useNavigation<AppRoutesNavigationProps>()
+
   const loggedUserId = '1'
 
   const isMyAd = loggedUserId === PRODUCT.user_id
 
+  function handleGoBack() {
+    navigate.goBack()
+  }
+
+  function handleNavigateToEditAd() {
+    navigate.navigate('editAd', { adId: PRODUCT.id })
+  }
+
   return (
-    <VStack className="flex-1">
+    <VStack className="flex-1 bg-gray-200">
       {/* HEADER */}
       <HStack className="items-center px-6 mt-9 mb-3 justify-between">
-        <TouchableOpacity className="">
+        <TouchableOpacity onPress={handleGoBack}>
           <ArrowLeft size={24} color={colors.gray[700]} />
         </TouchableOpacity>
 
         {isMyAd && (
-          <TouchableOpacity className="">
+          <TouchableOpacity onPress={handleNavigateToEditAd}>
             <PencilSimpleLine size={24} color={colors.gray[700]} />
           </TouchableOpacity>
         )}
