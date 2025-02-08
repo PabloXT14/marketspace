@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity, View } from 'react-native'
 import { Tag, ArrowRight } from 'phosphor-react-native'
 
@@ -5,9 +6,17 @@ import { HStack } from '@/components/ui/hstack'
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
 
+import type { AppRoutesNavigationProps } from '@/routes/app.routes'
+
 import { colors } from '@/styles/colors'
 
 export function Sell() {
+  const navigate = useNavigation<AppRoutesNavigationProps>()
+
+  function handleNavigateToMyAds() {
+    navigate.navigate('myAds')
+  }
+
   return (
     <VStack className="w-full gap-3">
       {/* TITLE */}
@@ -35,9 +44,10 @@ export function Sell() {
         <TouchableOpacity
           activeOpacity={0.7}
           className="flex-row gap-2 items-center"
+          onPress={handleNavigateToMyAds}
         >
           <Text className="text-blue-800 text-sm font-bold leading-snug">
-            Meus negócios
+            Meus anúncios
           </Text>
 
           <ArrowRight size={20} color={colors.blue[800]} />

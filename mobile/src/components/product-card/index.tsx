@@ -1,14 +1,13 @@
 import React, { type ComponentProps } from 'react'
-import { Image, View } from 'react-native'
+import { Image, TouchableOpacity, View } from 'react-native'
 import { twMerge } from 'tailwind-merge'
 
-import { Box } from '@/components/ui/box'
 import { Text } from '@/components/ui/text'
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar'
 
 import type { ProductDTO } from '@/dtos/product'
 
-type ProductCardProps = ComponentProps<typeof Box> & {
+type ProductCardProps = ComponentProps<typeof TouchableOpacity> & {
   data: ProductDTO & {
     seller: string
     sellerImageUrl: string
@@ -28,7 +27,10 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
   }).format(price)
 
   return (
-    <Box className={twMerge('w-full gap-2 rounded-lg', className)} {...props}>
+    <TouchableOpacity
+      className={twMerge('w-full gap-2 rounded-lg', className)}
+      {...props}
+    >
       {/* PRODUCT */}
       <View className="relative rounded-lg overflow-hidden">
         <Image
@@ -100,6 +102,6 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
           </Text>
         </View>
       </View>
-    </Box>
+    </TouchableOpacity>
   )
 }

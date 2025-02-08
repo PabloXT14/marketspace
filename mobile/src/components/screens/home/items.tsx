@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { FlatList, TouchableOpacity, View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import { MagnifyingGlass } from 'phosphor-react-native'
 
 import { Text } from '@/components/ui/text'
@@ -12,9 +13,9 @@ import { ListEmpty } from '@/components/list-empty'
 import { Input, InputField } from '@/components/input'
 import { Filter } from './filter'
 
+import type { AppRoutesNavigationProps } from '@/routes/app.routes'
+
 import { colors } from '@/styles/colors'
-import { twMerge } from 'tailwind-merge'
-import React from 'react'
 
 type Product = ProductDTO & {
   seller: string
@@ -154,6 +155,12 @@ const PRODUCTS: Product[] = [
 export function Items() {
   const [products, setProducts] = useState<Product[]>(PRODUCTS)
 
+  const navigate = useNavigation<AppRoutesNavigationProps>()
+
+  function handleNavigateToAdDetail(adId: string) {
+    navigate.navigate('adDetails', { adId })
+  }
+
   return (
     <VStack className="flex-1 gap-6">
       <VStack className="gap-3">
@@ -187,14 +194,24 @@ export function Items() {
             if (products.length % 2 !== 0 && index === products.length - 1) {
               return (
                 <>
-                  <ProductCard data={item} className="flex-1" />
+                  <ProductCard
+                    data={item}
+                    className="flex-1"
+                    onPress={() => handleNavigateToAdDetail(item.id)}
+                  />
 
                   <View className="flex-1" />
                 </>
               )
             }
 
-            return <ProductCard data={item} className="flex-1" />
+            return (
+              <ProductCard
+                data={item}
+                className="flex-1"
+                onPress={() => handleNavigateToAdDetail(item.id)}
+              />
+            )
           }}
           numColumns={2}
           columnWrapperClassName="gap-6"
