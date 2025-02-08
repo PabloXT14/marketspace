@@ -56,6 +56,7 @@ export function AppRoutes() {
           paddingBottom: 56,
         },
       }}
+      backBehavior="history"
     >
       <Screen
         name="home"
