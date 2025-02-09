@@ -1,11 +1,9 @@
-import { Platform, TouchableOpacity } from 'react-native'
+import { Platform } from 'react-native'
 import {
   createBottomTabNavigator,
   type BottomTabNavigationProp,
 } from '@react-navigation/bottom-tabs'
-import { House, SignOut, Tag } from 'phosphor-react-native'
-
-import type { ProductDTO } from '@/dtos/product'
+import { House, Tag } from 'phosphor-react-native'
 
 import { Home } from '@/screens/home'
 import { AdDetails } from '@/screens/ad-details'
@@ -18,6 +16,8 @@ import { colors } from '@/styles/colors'
 import { SignOutAlert } from '@/components/sign-out-alert'
 import { View } from 'react-native'
 
+import type { CreateAdFormProps } from '@/components/screens/create-ad/form'
+
 type AppRoutesProps = {
   home: undefined
   adDetails: {
@@ -26,7 +26,7 @@ type AppRoutesProps = {
   myAds: undefined
   createAd: undefined
   adPreview: {
-    data: ProductDTO
+    data: CreateAdFormProps
   }
   editAd: {
     adId: string
