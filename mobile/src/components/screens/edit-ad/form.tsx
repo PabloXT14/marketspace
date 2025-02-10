@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
+import { useNavigation } from '@react-navigation/native'
 
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
@@ -21,6 +22,8 @@ import { ToastMessage } from '@/components/toast-message'
 
 import { colors } from '@/styles/colors'
 import { Switch } from '@/components/switch'
+
+import type { AppRoutesNavigationProps } from '@/routes/app.routes'
 
 const MAX_IMAGE_SIZE_MB = 5
 const USER_NAME = 'John Doe'
@@ -83,6 +86,7 @@ export function Form() {
   })
 
   const toast = useToast()
+  const navigate = useNavigation<AppRoutesNavigationProps>()
 
   async function handleSelectImage(
     currentImages: FormData['images'],
@@ -166,6 +170,11 @@ export function Form() {
 
   async function handleCreateAd(data: FormData) {
     console.log(data)
+
+    navigate.navigate('adPreview', {
+      data,
+      action: 'update',
+    })
   }
 
   return (

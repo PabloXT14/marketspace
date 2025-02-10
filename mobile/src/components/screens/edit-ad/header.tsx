@@ -2,21 +2,30 @@ import type { ComponentProps } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { twMerge } from 'tailwind-merge'
 import { ArrowLeft } from 'phosphor-react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import { HStack } from '@/components/ui/hstack'
 import { Text } from '@/components/ui/text'
 
 import { colors } from '@/styles/colors'
 
+import type { AppRoutesNavigationProps } from '@/routes/app.routes'
+
 type HeaderProps = ComponentProps<typeof HStack>
 
 export function Header({ className, ...props }: HeaderProps) {
+  const navigate = useNavigation<AppRoutesNavigationProps>()
+
+  function handleGoBack() {
+    navigate.goBack()
+  }
+
   return (
     <HStack
       className={twMerge('relative items-center px-6 mb-6', className)}
       {...props}
     >
-      <TouchableOpacity className="absolute left-6">
+      <TouchableOpacity className="z-10 absolute left-6" onPress={handleGoBack}>
         <ArrowLeft size={24} color={colors.gray[700]} />
       </TouchableOpacity>
 

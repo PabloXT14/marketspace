@@ -27,6 +27,7 @@ type AppRoutesProps = {
   createAd: undefined
   adPreview: {
     data: CreateAdFormProps
+    action: 'create' | 'update'
   }
   editAd: {
     adId: string

@@ -163,6 +163,7 @@ export function Form() {
 
     navigate.navigate('adPreview', {
       data,
+      action: 'create',
     })
   }
 
