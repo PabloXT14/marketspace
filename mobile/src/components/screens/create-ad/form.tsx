@@ -23,6 +23,7 @@ import { colors } from '@/styles/colors'
 import { Switch } from '@/components/switch'
 
 import type { AppRoutesNavigationProps } from '@/routes/app.routes'
+import { CancelModal } from './cancel-modal'
 
 const MAX_IMAGE_SIZE_MB = 5
 const USER_NAME = 'John Doe'
@@ -67,11 +68,18 @@ export function Form() {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      title: '',
+      description: '',
       images: [],
+      condition: undefined,
+      price: '',
       acceptTrade: false,
+      paymentMethods: [],
     },
   })
 
@@ -165,6 +173,11 @@ export function Form() {
       data,
       action: 'create',
     })
+  }
+
+  function handleCancel() {
+    reset()
+    navigate.goBack()
   }
 
   return (
@@ -279,7 +292,7 @@ export function Form() {
             render={({ field: { value, onChange } }) => (
               <VStack className="items-start gap-1">
                 <RadioGroup
-                  value={value}
+                  value={value ?? null}
                   onChange={onChange}
                   className="flex-row gap-5 items-center"
                 >
@@ -346,7 +359,7 @@ export function Form() {
               name="paymentMethods"
               render={({ field: { value, onChange } }) => (
                 <CheckboxGroup
-                  value={value}
+                  value={value ?? []}
                   onChange={onChange}
                   className="gap-2"
                 >
@@ -369,9 +382,7 @@ export function Form() {
 
       {/* MENU ACTION */}
       <HStack className="bg-gray-100 px-6 py-7 gap-3">
-        <Button className="flex-1" type="gray">
-          <ButtonText type="gray">Cancelar</ButtonText>
-        </Button>
+        <CancelModal onConfirm={handleCancel} />
 
         <Button
           className="flex-1"

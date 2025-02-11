@@ -53,10 +53,10 @@ export function SignOutAlert() {
 
           <AlertDialogFooter className="flex-row items-center gap-2">
             <Button type="gray" onPress={handleClose} className="flex-1">
-              <ButtonText type="gray">Cancel</ButtonText>
+              <ButtonText type="gray">Cancelar</ButtonText>
             </Button>
             <Button type="black" onPress={handleClose} className="flex-1">
-              <ButtonText type="black">Delete</ButtonText>
+              <ButtonText type="black">Sair</ButtonText>
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
