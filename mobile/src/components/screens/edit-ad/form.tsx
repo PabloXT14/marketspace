@@ -67,6 +67,7 @@ export function Form() {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -179,6 +180,7 @@ export function Form() {
   }
 
   function handleCancel() {
+    reset()
     navigate.goBack()
   }
 
