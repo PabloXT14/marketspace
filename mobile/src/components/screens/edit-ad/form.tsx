@@ -24,6 +24,7 @@ import { colors } from '@/styles/colors'
 import { Switch } from '@/components/switch'
 
 import type { AppRoutesNavigationProps } from '@/routes/app.routes'
+import { CancelModal } from './cancel-modal'
 
 const MAX_IMAGE_SIZE_MB = 5
 const USER_NAME = 'John Doe'
@@ -175,6 +176,10 @@ export function Form() {
       data,
       action: 'update',
     })
+  }
+
+  function handleCancel() {
+    navigate.goBack()
   }
 
   return (
@@ -379,9 +384,7 @@ export function Form() {
 
       {/* MENU ACTION */}
       <HStack className="bg-gray-100 px-6 py-7 gap-3">
-        <Button className="flex-1" type="gray">
-          <ButtonText type="gray">Cancelar</ButtonText>
-        </Button>
+        <CancelModal onConfirm={handleCancel} />
 
         <Button
           className="flex-1"
