@@ -25,6 +25,7 @@ import { Switch } from '@/components/switch'
 
 import type { AppRoutesNavigationProps } from '@/routes/app.routes'
 import { CancelModal } from './cancel-modal'
+import { formatCurrencyMask } from '@/utils/format-currency-mask'
 
 const MAX_IMAGE_SIZE_MB = 5
 const USER_NAME = 'John Doe'
@@ -51,7 +52,10 @@ const FormSchema = z.object({
   }),
   price: z
     .string({ required_error: 'O preço é obrigatório' })
-    .min(1, 'O preço é obrigatório'),
+    .min(1, 'O preço é obrigatório')
+    .refine(value => Number(value.replace(/\D/g, '')) > 0, {
+      message: 'O preço deve ser maior que zero',
+    }),
   acceptTrade: z.boolean(),
   paymentMethods: z
     .array(z.string(), {
@@ -332,7 +336,11 @@ export function Form() {
                 <InputField
                   placeholder="Valor do produto"
                   value={value}
-                  onChangeText={onChange}
+                  onChangeText={value => {
+                    const formattedValue = formatCurrencyMask(value)
+
+                    onChange(formattedValue)
+                  }}
                   keyboardType="numeric"
                 />
               </Input>
