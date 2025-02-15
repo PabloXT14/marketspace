@@ -1,4 +1,4 @@
-import { Platform } from 'react-native'
+import { Platform, Pressable, Text } from 'react-native'
 import {
   createBottomTabNavigator,
   type BottomTabNavigationProp,
@@ -56,6 +56,8 @@ export function AppRoutes() {
           paddingTop: 20,
           paddingBottom: 56,
         },
+        animation: 'shift',
+        tabBarHideOnKeyboard: true,
       }}
       backBehavior="history"
     >
@@ -70,6 +72,13 @@ export function AppRoutes() {
               weight={focused ? 'bold' : 'regular'}
             />
           ),
+          tabBarHideOnKeyboard: true,
+          tabBarButton: props => (
+            <Pressable
+              {...props}
+              android_ripple={{ borderless: false, color: 'transparent' }}
+            />
+          ),
         }}
       />
 
@@ -82,6 +91,12 @@ export function AppRoutes() {
               size={iconSize}
               color={color}
               weight={focused ? 'bold' : 'regular'}
+            />
+          ),
+          tabBarButton: props => (
+            <Pressable
+              {...props}
+              android_ripple={{ borderless: false, color: 'transparent' }}
             />
           ),
         }}
