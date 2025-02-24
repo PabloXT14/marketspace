@@ -5,7 +5,7 @@ import { AuthRoutes } from './auth.routes'
 import { AppRoutes } from './app.routes'
 
 export function Routes() {
-  const isAuthenticated = true
+  const isAuthenticated = false
 
   return (
     <SafeAreaView className="flex-1 bg-gray-200">
