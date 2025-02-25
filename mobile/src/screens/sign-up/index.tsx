@@ -21,12 +21,13 @@ import type { AuthRoutesNavigationProps } from '@/routes/auth.routes'
 import { colors } from '@/styles/colors'
 
 import Logo from '@/assets/logo.svg'
+import { createUser } from '@/https/create-user'
 
 const MAX_IMAGE_SIZE_MB = 5
 
 const FormSchema = z
   .object({
-    image: z.object(
+    avatar: z.object(
       {
         name: z.string(),
         uri: z.string(),
@@ -40,7 +41,7 @@ const FormSchema = z
     email: z
       .string({ required_error: 'E-mail obrigatório' })
       .email('E-mail invalido'),
-    phone: z
+    tel: z
       .string({ required_error: 'Telefone obrigatório' })
       .min(11, 'O telefone deve ter no mínimo 11 caracteres'),
     password: z
@@ -72,13 +73,13 @@ export function SignUp() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
   })
 
   async function handleSelectImage(
-    currentImage: FormData['image'],
+    currentImage: FormData['avatar'],
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     onChange: any
   ) {
@@ -166,7 +167,42 @@ export function SignUp() {
   }
 
   async function handleSignUp(data: FormData) {
-    console.log(data)
+    try {
+      await createUser({
+        data: {
+          ...data,
+          avatar: data.avatar as unknown as Blob,
+        },
+      })
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="success"
+            title="Usuário criado com sucesso!"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+
+      navigation.navigate('signIn')
+    } catch (error) {
+      console.log(error)
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title="Erro ao criar usuário! Tente novamente ou mais tarde"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
   }
 
   return (
@@ -197,17 +233,17 @@ export function SignUp() {
             {/* IMAGE */}
             <Controller
               control={control}
-              name="image"
-              render={({ field: { value: image, onChange } }) => (
+              name="avatar"
+              render={({ field: { value: avatar, onChange } }) => (
                 <VStack className="gap-2 items-center">
                   <UserPhotoSelect
-                    image={image?.uri}
-                    onSelectImage={() => handleSelectImage(image, onChange)}
+                    image={avatar?.uri}
+                    onSelectImage={() => handleSelectImage(avatar, onChange)}
                   />
 
-                  {errors.image?.message && (
+                  {errors.avatar?.message && (
                     <Text className="text-red-400 text-base font-regular leading-snug">
-                      {errors.image.message}
+                      {errors.avatar.message}
                     </Text>
                   )}
                 </VStack>
@@ -246,9 +282,9 @@ export function SignUp() {
 
             <Controller
               control={control}
-              name="phone"
+              name="tel"
               render={({ field: { value, onChange } }) => (
-                <Input errorMessage={errors.phone?.message}>
+                <Input errorMessage={errors.tel?.message}>
                   <InputField
                     placeholder="Telefone"
                     keyboardType="phone-pad"
@@ -317,6 +353,7 @@ export function SignUp() {
               type="black"
               className="mt-8"
               onPress={handleSubmit(handleSignUp)}
+              isLoading={isSubmitting}
             >
               <ButtonText type="black">Criar</ButtonText>
             </Button>
