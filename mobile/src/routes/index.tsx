@@ -23,7 +23,8 @@ export function Routes() {
   return (
     <SafeAreaView className="flex-1 bg-gray-200">
       <NavigationContainer>
-        {user ? <AppRoutes /> : <AuthRoutes />}
+        {/* {user ? <AppRoutes /> : <AuthRoutes />} */}
+        {<AuthRoutes />}
       </NavigationContainer>
     </SafeAreaView>
   )

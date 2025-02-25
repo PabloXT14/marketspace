@@ -5,20 +5,35 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useNavigation } from '@react-navigation/native'
+import * as ImagePicker from 'expo-image-picker'
+import * as FileSystem from 'expo-file-system'
 
 import { VStack } from '@/components/ui/vstack'
 import { Text } from '@/components/ui/text'
 
 import { Input, InputField } from '@/components/input'
 import { Button, ButtonText } from '@/components/button'
+import { ToastMessage } from '@/components/toast-message'
+import { useToast } from '@/components/ui/toast'
 import { UserPhotoSelect } from '@/components/user-photo-select'
 import type { AuthRoutesNavigationProps } from '@/routes/auth.routes'
 
-import Logo from '@/assets/logo.svg'
 import { colors } from '@/styles/colors'
+
+import Logo from '@/assets/logo.svg'
+
+const MAX_IMAGE_SIZE_MB = 5
 
 const FormSchema = z
   .object({
+    image: z.object(
+      {
+        name: z.string(),
+        uri: z.string(),
+        type: z.string(),
+      },
+      { required_error: 'Selecione uma imagem' }
+    ),
     name: z
       .string({ required_error: 'Nome obrigatório' })
       .min(3, 'O nome deve ter no mínimo 3 caracteres'),
@@ -48,6 +63,7 @@ export function SignUp() {
     useState(false)
 
   const navigation = useNavigation<AuthRoutesNavigationProps>()
+  const toast = useToast()
 
   function handleGoBack() {
     navigation.goBack()
@@ -60,6 +76,86 @@ export function SignUp() {
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
   })
+
+  async function handleSelectImage(
+    currentImage: FormData['image'],
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    onChange: any
+  ) {
+    try {
+      const photosSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      })
+
+      if (photosSelected.canceled) return
+
+      const photoUri = photosSelected.assets[0].uri
+
+      if (photoUri) {
+        const photoInfo = (await FileSystem.getInfoAsync(photoUri)) as {
+          size: number
+        }
+
+        const photoSizeInMb = photoInfo.size && photoInfo.size / 1024 / 1024
+
+        if (photoSizeInMb && photoSizeInMb > MAX_IMAGE_SIZE_MB) {
+          return toast.show({
+            placement: 'top',
+            duration: 7000,
+            render: ({ id }) => (
+              <ToastMessage
+                id={id}
+                action="error"
+                title="Imagem muito grande"
+                description={`A imagem selecionada possui um tamanho maior que ${MAX_IMAGE_SIZE_MB}MB.`}
+                onClose={() => toast.close(id)}
+              />
+            ),
+          })
+        }
+
+        const fileExtension = photoUri.split('.').pop()
+
+        const photoFile = {
+          name: `${Date.now()}-masketspace.${fileExtension}`.toLowerCase(),
+          uri: photoUri,
+          type: `${photosSelected.assets[0].type}/${fileExtension}`,
+        }
+
+        onChange(photoFile)
+
+        toast.show({
+          placement: 'top',
+          render: ({ id }) => (
+            <ToastMessage
+              id={id}
+              action="success"
+              title="Foto adicionada com sucesso!"
+              onClose={() => toast.close(id)}
+            />
+          ),
+        })
+      }
+    } catch (error) {
+      console.log(error)
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title="Erro ao selecionar imagem"
+            description="Ocorreu um erro ao selecionar a imagem, tente novamente"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
 
   function handleTogglePasswordVisibility() {
     setIsPasswordVisible(prevState => !prevState)
@@ -98,7 +194,25 @@ export function SignUp() {
 
           {/* FORM */}
           <VStack className="gap-4 items-center">
-            <UserPhotoSelect />
+            {/* IMAGE */}
+            <Controller
+              control={control}
+              name="image"
+              render={({ field: { value: image, onChange } }) => (
+                <VStack className="gap-2 items-center">
+                  <UserPhotoSelect
+                    image={image?.uri}
+                    onSelectImage={() => handleSelectImage(image, onChange)}
+                  />
+
+                  {errors.image?.message && (
+                    <Text className="text-red-400 text-base font-regular leading-snug">
+                      {errors.image.message}
+                    </Text>
+                  )}
+                </VStack>
+              )}
+            />
 
             <Controller
               control={control}
