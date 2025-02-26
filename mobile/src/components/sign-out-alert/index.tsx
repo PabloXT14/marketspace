@@ -13,13 +13,17 @@ import {
 import { Button, ButtonText } from '../button'
 import { Text } from '../ui/text'
 
+import { useAuthStore } from '@/store/auth-store'
+
 import { colors } from '@/styles/colors'
 
 export function SignOutAlert() {
   const [showAlertDialog, setShowAlertDialog] = useState(false)
 
-  function handleSignOut() {
-    // SIGN OUT
+  const signOut = useAuthStore(state => state.signOut)
+
+  async function handleSignOut() {
+    await signOut()
   }
 
   function handleClose() {
@@ -55,7 +59,7 @@ export function SignOutAlert() {
             <Button type="gray" onPress={handleClose} className="flex-1">
               <ButtonText type="gray">Cancelar</ButtonText>
             </Button>
-            <Button type="black" onPress={handleClose} className="flex-1">
+            <Button type="black" onPress={handleSignOut} className="flex-1">
               <ButtonText type="black">Sair</ButtonText>
             </Button>
           </AlertDialogFooter>
