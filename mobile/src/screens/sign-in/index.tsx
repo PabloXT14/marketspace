@@ -12,11 +12,15 @@ import { Text } from '@/components/ui/text'
 import { Input, InputField } from '@/components/input'
 import { Button, ButtonText } from '@/components/button'
 import type { AuthRoutesNavigationProps } from '@/routes/auth.routes'
+import { ToastMessage } from '@/components/toast-message'
 
 import Logo from '@/assets/logo.svg'
 import MarketspaceText from '@/assets/marketspace-text.svg'
 
 import { colors } from '@/styles/colors'
+import { useToast } from '@/components/ui/toast'
+import { makeSignIn } from '@/https/make-sign-in'
+import { useAuthStore } from '@/store/auth-store'
 
 const FormSchema = z.object({
   email: z
@@ -32,10 +36,13 @@ type FormData = z.infer<typeof FormSchema>
 export function SignIn() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
+  const signIn = useAuthStore(state => state.signIn)
+  const toast = useToast()
+
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
   })
@@ -47,7 +54,26 @@ export function SignIn() {
   }
 
   async function handleSignIn(data: FormData) {
-    console.log(data)
+    try {
+      const { token, user, refresh_token } = await makeSignIn(data)
+
+      await signIn(user, token)
+    } catch (error) {
+      console.log('', error)
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title="Erro ao acessar!"
+            description="Tente novamente ou mais tarde"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
   }
 
   function handleNewAccount() {
@@ -124,7 +150,11 @@ export function SignIn() {
               )}
             />
 
-            <Button className="mt-8" onPress={handleSubmit(handleSignIn)}>
+            <Button
+              isLoading={isSubmitting}
+              className="mt-8"
+              onPress={handleSubmit(handleSignIn)}
+            >
               <ButtonText>Entrar</ButtonText>
             </Button>
           </VStack>

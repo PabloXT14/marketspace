@@ -10,9 +10,14 @@ import { Button, ButtonText } from '@/components/button'
 
 import type { AppRoutesNavigationProps } from '@/routes/app.routes'
 
+import { useAuthStore } from '@/store/auth-store'
+
 import { colors } from '@/styles/colors'
+import { api } from '@/services/api'
 
 export function Header() {
+  const user = useAuthStore(state => state.user)
+
   const navigate = useNavigation<AppRoutesNavigationProps>()
 
   function handleNavigateToCreateAd() {
@@ -23,8 +28,8 @@ export function Header() {
     <HStack className="gap-2 items-center">
       <HStack className="gap-2.5 items-center flex-1">
         <UserPhoto
-          source={'https://github.com/pabloxt14.png'}
-          alt="User photo"
+          source={`${api.defaults.baseURL}/images/${user?.avatar}`}
+          alt={user?.name}
           size="sm"
         />
 
@@ -33,7 +38,7 @@ export function Header() {
             Boas vindas,
           </Text>
           <Text className="text-gray-700 text-base font-bold leading-snug">
-            John!
+            {user?.name}!
           </Text>
         </VStack>
       </HStack>
