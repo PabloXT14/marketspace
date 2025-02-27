@@ -12,6 +12,7 @@ import {
   removeAuthTokenStorage,
   getAuthTokenStorage,
 } from '@/storage/auth-token-storage'
+import { api } from '@/services/api'
 
 type AuthState = {
   user: UserDTO | null
@@ -31,6 +32,8 @@ export const useAuthStore = create<AuthState>(set => ({
     try {
       await setUserStorage(user)
       await setAuthTokenStorage(token)
+
+      api.defaults.headers.common.Authorization = `Bearer ${token}`
 
       set({ user, token })
     } catch (error) {
@@ -56,6 +59,8 @@ export const useAuthStore = create<AuthState>(set => ({
 
       if (user && token) {
         set({ user, token })
+
+        api.defaults.headers.common.Authorization = `Bearer ${token}`
       }
     } catch (error) {
       console.log('Erro ao carregar credenciais: ', error)

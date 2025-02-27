@@ -5,6 +5,16 @@ export type AllowedPaymentMethods =
   | 'cash'
   | 'boleto'
 
+type PaymentMethod = {
+  key: AllowedPaymentMethods
+  name: string
+}
+
+type ProductImage = {
+  id: string
+  path: string
+}
+
 export type ProductDTO = {
   id: string
   name: string
@@ -12,9 +22,15 @@ export type ProductDTO = {
   is_new: boolean
   price: number
   accept_trade: boolean
-  user_id: string
-  is_active: boolean
-  payment_methods: AllowedPaymentMethods[]
-  created_at: string
-  updated_at: string
+  payment_methods: PaymentMethod[]
+  product_images: ProductImage[]
+  user_id?: string
+  user: {
+    avatar: string
+    name: string
+    tel: string
+  }
+  is_active?: boolean
+  created_at?: string
+  updated_at?: string
 }
