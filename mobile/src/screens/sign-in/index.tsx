@@ -57,7 +57,7 @@ export function SignIn() {
     try {
       const { token, user, refresh_token } = await makeSignIn(data)
 
-      await signIn(user, token)
+      await signIn(user, token, refresh_token)
     } catch (error) {
       console.log('', error)
 
