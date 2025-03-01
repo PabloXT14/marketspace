@@ -6,18 +6,14 @@ import { Text } from '@/components/ui/text'
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar'
 
 import type { ProductDTO } from '@/dtos/product'
+import { api } from '@/services/api'
 
 type ProductCardProps = ComponentProps<typeof TouchableOpacity> & {
-  data: ProductDTO & {
-    seller: string
-    sellerImageUrl: string
-    imageUrl: string
-  }
+  data: ProductDTO
 }
 
 export function ProductCard({ data, className, ...props }: ProductCardProps) {
-  const { name, price, imageUrl, is_new, is_active, seller, sellerImageUrl } =
-    data
+  const { name, price, product_images, is_new, is_active, user } = data
 
   const conditionText = is_new ? 'Novo' : 'Usado'
 
@@ -25,6 +21,8 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
     style: 'currency',
     currency: 'BRL',
   }).format(price)
+
+  console.log('IMAGE: ', product_images[0].path)
 
   return (
     <TouchableOpacity
@@ -34,7 +32,9 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
       {/* PRODUCT */}
       <View className="relative rounded-lg overflow-hidden">
         <Image
-          source={{ uri: imageUrl }}
+          source={{
+            uri: `${api.defaults.baseURL}/images/${product_images[0].path}`,
+          }}
           alt={name}
           className="w-full h-28 object-cover rounded-lg"
         />
@@ -43,9 +43,12 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
           size="sm"
           className="absolute top-1.5 left-1.5 border border-gray-100"
         >
-          <AvatarFallbackText>{seller}</AvatarFallbackText>
+          <AvatarFallbackText>{user.name}</AvatarFallbackText>
 
-          <AvatarImage source={{ uri: sellerImageUrl }} alt={seller} />
+          <AvatarImage
+            source={{ uri: `${api.defaults.baseURL}/images/${user.avatar}` }}
+            alt={user.name}
+          />
         </Avatar>
 
         <View

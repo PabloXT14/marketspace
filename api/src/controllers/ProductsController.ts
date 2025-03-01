@@ -75,6 +75,7 @@ export class ProductsController {
         name: true,
         price: true,
         is_new: true,
+        is_active: true,
         accept_trade: true,
         product_images: {
           select: {
