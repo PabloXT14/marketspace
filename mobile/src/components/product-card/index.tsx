@@ -22,8 +22,6 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
     currency: 'BRL',
   }).format(price)
 
-  console.log('IMAGE: ', product_images[0].path)
-
   return (
     <TouchableOpacity
       className={twMerge('w-full gap-2 rounded-lg', className)}

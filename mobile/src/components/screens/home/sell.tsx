@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity, View } from 'react-native'
 import { Tag, ArrowRight } from 'phosphor-react-native'
@@ -10,12 +11,31 @@ import type { AppRoutesNavigationProps } from '@/routes/app.routes'
 
 import { colors } from '@/styles/colors'
 
+import { getUserProducts } from '@/https/get-user-products'
+import type { ProductDTO } from '@/dtos/product'
+
 export function Sell() {
+  const [products, setProducts] = useState<ProductDTO[]>([])
+
   const navigate = useNavigation<AppRoutesNavigationProps>()
+
+  async function fetchProducts() {
+    const { products } = await getUserProducts()
+
+    setProducts(products)
+  }
 
   function handleNavigateToMyAds() {
     navigate.navigate('myAds')
   }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const countActiveProducts = products.filter(
+    product => product.is_active
+  ).length
 
   return (
     <VStack className="w-full gap-3">
@@ -32,7 +52,7 @@ export function Sell() {
 
           <View>
             <Text className="text-gray-600 text-xl font-bold leading-snug">
-              4
+              {countActiveProducts}
             </Text>
             <Text className="text-gray-600 text-sm font-regular leading-snug">
               anúncios ativos
