@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { TouchableOpacity, useWindowDimensions } from 'react-native'
 import { Sliders, X } from 'phosphor-react-native'
 import {
@@ -18,6 +18,13 @@ import { Checkbox, CheckboxGroup } from '@/components/checkbox'
 
 import { colors } from '@/styles/colors'
 
+import type { FilterOptions } from '@/screens/home'
+
+type FilterProps = {
+  filterOptions: FilterOptions
+  setFilterOptions: React.Dispatch<React.SetStateAction<FilterOptions>>
+}
+
 function Backdrop(props: BottomSheetBackdropProps) {
   return (
     <BottomSheetBackdrop
@@ -29,7 +36,7 @@ function Backdrop(props: BottomSheetBackdropProps) {
   )
 }
 
-export function Filter() {
+export function Filter({ filterOptions, setFilterOptions }: FilterProps) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null)
   const dimensions = useWindowDimensions()
 
@@ -38,13 +45,11 @@ export function Filter() {
     max: dimensions.height - 230,
   }
 
-  const [paymentMethods, setPaymentMethods] = useState([
-    'boleto',
-    'pix',
-    'dinheiro',
-    'credit-card',
-    'back-deposit',
-  ])
+  const [isNew, setIsNew] = useState(filterOptions.is_new)
+  const [acceptTrade, setAcceptTrade] = useState(filterOptions.accept_trade)
+  const [paymentMethods, setPaymentMethods] = useState(
+    filterOptions.payment_methods
+  )
 
   const handlePresentModalPress = () => {
     bottomSheetModalRef.current?.present()
@@ -57,6 +62,28 @@ export function Filter() {
   const handleSheetChanges = useCallback((index: number) => {
     // console.log('handleSheetChanges', index)
   }, [])
+
+  function handleApplyFilters() {
+    setFilterOptions({
+      is_new: isNew,
+      accept_trade: acceptTrade,
+      payment_methods: paymentMethods,
+    })
+
+    handleCloseModalPress()
+  }
+
+  function handleClearFilters() {
+    setIsNew(true)
+    setAcceptTrade(false)
+    setPaymentMethods(['pix', 'card', 'deposit', 'cash', 'boleto'])
+
+    setFilterOptions({
+      is_new: true,
+      accept_trade: false,
+      payment_methods: ['pix', 'card', 'deposit', 'cash', 'boleto'],
+    })
+  }
 
   return (
     <>
@@ -101,14 +128,24 @@ export function Filter() {
               </Text>
 
               <HStack className="gap-2">
-                <Tag>
-                  <TagText>Novo</TagText>
-                  <TagCloseIcon />
+                <Tag
+                  onPress={() => setIsNew(true)}
+                  variant={isNew ? 'primary' : 'secondary'}
+                >
+                  <TagText variant={isNew ? 'primary' : 'secondary'}>
+                    Novo
+                  </TagText>
+                  <TagCloseIcon variant={isNew ? 'primary' : 'secondary'} />
                 </Tag>
 
-                <Tag variant="secondary">
-                  <TagText variant="secondary">Usado</TagText>
-                  <TagCloseIcon variant="secondary" />
+                <Tag
+                  onPress={() => setIsNew(false)}
+                  variant={!isNew ? 'primary' : 'secondary'}
+                >
+                  <TagText variant={!isNew ? 'primary' : 'secondary'}>
+                    Usado
+                  </TagText>
+                  <TagCloseIcon variant={!isNew ? 'primary' : 'secondary'} />
                 </Tag>
               </HStack>
             </VStack>
@@ -120,7 +157,11 @@ export function Filter() {
                 Aceita troca
               </Text>
               <HStack>
-                <Switch />
+                <Switch
+                  defaultValue={acceptTrade}
+                  value={acceptTrade}
+                  onToggle={setAcceptTrade}
+                />
               </HStack>
             </VStack>
 
@@ -146,11 +187,15 @@ export function Filter() {
 
           {/* ACTIONS */}
           <HStack className="gap-3">
-            <Button type="gray" className="flex-1">
+            <Button type="gray" className="flex-1" onPress={handleClearFilters}>
               <ButtonText type="gray">Resetar filtros</ButtonText>
             </Button>
 
-            <Button type="black" className="flex-1">
+            <Button
+              type="black"
+              className="flex-1"
+              onPress={handleApplyFilters}
+            >
               <ButtonText type="black">Aplicar filtros</ButtonText>
             </Button>
           </HStack>

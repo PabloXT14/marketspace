@@ -2,7 +2,7 @@ import { api } from '@/services/api'
 
 import type { AllowedPaymentMethods, ProductDTO } from '@/dtos/product'
 
-type GetProductsRequest = {
+export type GetProductsRequest = {
   is_new?: boolean
   accept_trade?: boolean
   payment_methods?: AllowedPaymentMethods[]

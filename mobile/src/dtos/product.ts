@@ -5,7 +5,7 @@ export type AllowedPaymentMethods =
   | 'cash'
   | 'boleto'
 
-type PaymentMethod = {
+export type PaymentMethod = {
   key: AllowedPaymentMethods
   name: string
 }

@@ -1,21 +1,15 @@
-import React, { useState } from 'react'
-import { FlatList, TouchableOpacity, View } from 'react-native'
+import React from 'react'
+import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { MagnifyingGlass } from 'phosphor-react-native'
 
-import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
 
 import type { ProductDTO } from '@/dtos/product'
 
 import { ProductCard } from '@/components/product-card'
 import { ListEmpty } from '@/components/list-empty'
-import { Input, InputField } from '@/components/input'
-import { Filter } from './filter'
 
 import type { AppRoutesNavigationProps } from '@/routes/app.routes'
-
-import { colors } from '@/styles/colors'
 
 type ItemsProps = {
   data: ProductDTO[]
@@ -32,27 +26,6 @@ export function Items({ data: products }: ItemsProps) {
 
   return (
     <VStack className="flex-1 gap-6">
-      <VStack className="gap-3">
-        {/* TITLE */}
-        <Text className="text-gray-500 text-sm font-regular leading-snug">
-          Compre produtos variados
-        </Text>
-
-        {/* SEARCH */}
-        <Input>
-          <InputField placeholder="Buscar anúncio" />
-
-          <TouchableOpacity>
-            <MagnifyingGlass size={20} color={colors.gray[600]} weight="bold" />
-          </TouchableOpacity>
-
-          {/* DIVIDER */}
-          <View className="w-px h-6 mx-2 bg-gray-400" />
-
-          <Filter />
-        </Input>
-      </VStack>
-
       {/* PRODUCTS */}
       <VStack className="flex-1">
         <FlatList
