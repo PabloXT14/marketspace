@@ -3,7 +3,7 @@ import { api } from '@/services/api'
 import type { AllowedPaymentMethods, ProductDTO } from '@/dtos/product'
 
 export type GetProductsRequest = {
-  is_new?: boolean
+  is_new?: boolean | null
   accept_trade?: boolean
   payment_methods?: AllowedPaymentMethods[]
   query?: string

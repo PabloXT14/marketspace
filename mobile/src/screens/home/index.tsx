@@ -21,7 +21,7 @@ import { getProducts, type GetProductsRequest } from '@/https/get-products'
 import type { AllowedPaymentMethods, ProductDTO } from '@/dtos/product'
 
 export type FilterOptions = {
-  is_new: boolean
+  is_new: boolean | null
   accept_trade: boolean
   payment_methods: AllowedPaymentMethods[]
 }
@@ -32,7 +32,7 @@ export function Home() {
   const debouncedSearch = useDebounce(search, 300)
 
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
-    is_new: true,
+    is_new: null,
     accept_trade: false,
     payment_methods: ['pix', 'card', 'deposit', 'cash', 'boleto'],
   })

@@ -45,7 +45,7 @@ export function Filter({ filterOptions, setFilterOptions }: FilterProps) {
     max: dimensions.height - 230,
   }
 
-  const [isNew, setIsNew] = useState(filterOptions.is_new)
+  const [isNew, setIsNew] = useState<boolean | null>(filterOptions.is_new)
   const [acceptTrade, setAcceptTrade] = useState(filterOptions.accept_trade)
   const [paymentMethods, setPaymentMethods] = useState(
     filterOptions.payment_methods
@@ -74,7 +74,7 @@ export function Filter({ filterOptions, setFilterOptions }: FilterProps) {
   }
 
   function handleClearFilters() {
-    setIsNew(true)
+    setIsNew(null)
     setAcceptTrade(false)
     setPaymentMethods(['pix', 'card', 'deposit', 'cash', 'boleto'])
 
@@ -129,23 +129,31 @@ export function Filter({ filterOptions, setFilterOptions }: FilterProps) {
 
               <HStack className="gap-2">
                 <Tag
-                  onPress={() => setIsNew(true)}
-                  variant={isNew ? 'primary' : 'secondary'}
+                  onPress={() =>
+                    setIsNew(prev => (prev === true ? null : true))
+                  }
+                  variant={isNew === true ? 'primary' : 'secondary'}
                 >
-                  <TagText variant={isNew ? 'primary' : 'secondary'}>
+                  <TagText variant={isNew === true ? 'primary' : 'secondary'}>
                     Novo
                   </TagText>
-                  <TagCloseIcon variant={isNew ? 'primary' : 'secondary'} />
+                  <TagCloseIcon
+                    variant={isNew === true ? 'primary' : 'secondary'}
+                  />
                 </Tag>
 
                 <Tag
-                  onPress={() => setIsNew(false)}
-                  variant={!isNew ? 'primary' : 'secondary'}
+                  onPress={() =>
+                    setIsNew(prev => (prev === false ? null : false))
+                  }
+                  variant={isNew === false ? 'primary' : 'secondary'}
                 >
-                  <TagText variant={!isNew ? 'primary' : 'secondary'}>
+                  <TagText variant={isNew === false ? 'primary' : 'secondary'}>
                     Usado
                   </TagText>
-                  <TagCloseIcon variant={!isNew ? 'primary' : 'secondary'} />
+                  <TagCloseIcon
+                    variant={isNew === false ? 'primary' : 'secondary'}
+                  />
                 </Tag>
               </HStack>
             </VStack>
