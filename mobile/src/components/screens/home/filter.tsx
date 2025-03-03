@@ -178,9 +178,9 @@ export function Filter({ filterOptions, setFilterOptions }: FilterProps) {
               >
                 <Checkbox value="boleto" label="Boleto" />
                 <Checkbox value="pix" label="Pix" />
-                <Checkbox value="dinheiro" label="Dinheiro" />
-                <Checkbox value="credit-card" label="Cartão de crédito" />
-                <Checkbox value="back-deposit" label="Depósito de volta" />
+                <Checkbox value="cash" label="Dinheiro" />
+                <Checkbox value="card" label="Cartão de crédito" />
+                <Checkbox value="deposit" label="Depósito de volta" />
               </CheckboxGroup>
             </VStack>
           </VStack>
