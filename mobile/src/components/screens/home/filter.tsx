@@ -167,8 +167,10 @@ export function Filter({ filterOptions, setFilterOptions }: FilterProps) {
               <HStack>
                 <Switch
                   defaultValue={acceptTrade}
-                  value={acceptTrade}
-                  onToggle={setAcceptTrade}
+                  // value={acceptTrade}
+                  onValueChange={newValue => {
+                    setAcceptTrade(newValue)
+                  }}
                 />
               </HStack>
             </VStack>

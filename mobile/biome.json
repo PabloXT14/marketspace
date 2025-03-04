@@ -29,12 +29,13 @@
       },
       "correctness": {
         "useExhaustiveDependencies": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "info"
       }
     }
   },
   "files": {
-    "ignore": [
-      "node_modules"
-    ]
+    "ignore": ["node_modules"]
   }
 }
