@@ -31,23 +31,25 @@ export function ProductCard({ data, className, ...props }: ProductCardProps) {
       <View className="relative rounded-lg overflow-hidden">
         <Image
           source={{
-            uri: `${api.defaults.baseURL}/images/${product_images[0].path}`,
+            uri: `${api.defaults.baseURL}/images/${product_images[0]?.path}`,
           }}
           alt={name}
           className="w-full h-28 object-cover rounded-lg"
         />
 
-        <Avatar
-          size="sm"
-          className="absolute top-1.5 left-1.5 border border-gray-100"
-        >
-          <AvatarFallbackText>{user.name}</AvatarFallbackText>
+        {user?.avatar && (
+          <Avatar
+            size="sm"
+            className="absolute top-1.5 left-1.5 border border-gray-100"
+          >
+            <AvatarFallbackText>{user?.name}</AvatarFallbackText>
 
-          <AvatarImage
-            source={{ uri: `${api.defaults.baseURL}/images/${user.avatar}` }}
-            alt={user.name}
-          />
-        </Avatar>
+            <AvatarImage
+              source={{ uri: `${api.defaults.baseURL}/images/${user?.avatar}` }}
+              alt={user?.name}
+            />
+          </Avatar>
+        )}
 
         <View
           className={twMerge(

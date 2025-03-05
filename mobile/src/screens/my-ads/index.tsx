@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { VStack } from '@/components/ui/vstack'
 
 import { HStack } from '@/components/ui/hstack'
 import { Text } from '@/components/ui/text'
 
-import { Items, type Product } from '@/components/screens/my-ads/items'
+import { Items } from '@/components/screens/my-ads/items'
 import { Header } from '@/components/screens/my-ads/header'
 import {
   Select,
@@ -16,135 +16,12 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/select'
+import { Loading } from '@/components/loading'
+import { ToastMessage } from '@/components/toast-message'
+import { useToast } from '@/components/ui/toast'
 
-const PRODUCTS: Product[] = [
-  {
-    id: '1',
-    name: 'Tênis vermelho',
-    description: 'Tênis de corrida',
-    price: 59.9,
-    imageUrl:
-      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    is_new: false,
-    is_active: true,
-    accept_trade: false,
-    user_id: '1',
-    seller: 'Vendedor 1',
-    sellerImageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    payment_methods: ['card', 'boleto'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    name: 'Bicicleta',
-    description: 'Bicicleta de montanha',
-    price: 120,
-    imageUrl:
-      'https://plus.unsplash.com/premium_photo-1678718713393-2b88cde9605b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    is_new: true,
-    is_active: true,
-    accept_trade: true,
-    user_id: '2',
-    seller: 'Vendedor 2',
-    sellerImageUrl:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    payment_methods: ['card', 'boleto'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    name: 'Camiseta',
-    description: 'Camiseta de futebol',
-    price: 59.9,
-    imageUrl:
-      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    is_new: false,
-    is_active: false,
-    accept_trade: false,
-    user_id: '3',
-    seller: 'Vendedor 3',
-    sellerImageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    payment_methods: ['card', 'boleto'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: '4',
-    name: 'Bicicleta',
-    description: 'Bicicleta de montanha',
-    price: 120,
-    imageUrl:
-      'https://plus.unsplash.com/premium_photo-1678718713393-2b88cde9605b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    is_new: true,
-    is_active: true,
-    accept_trade: true,
-    user_id: '4',
-    seller: 'Vendedor 4',
-    sellerImageUrl:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    payment_methods: ['card', 'boleto'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: '5',
-    name: 'Camiseta',
-    description: 'Camiseta de futebol',
-    price: 59.9,
-    imageUrl:
-      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    is_new: false,
-    is_active: true,
-    accept_trade: false,
-    user_id: '5',
-    seller: 'Vendedor 5',
-    sellerImageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    payment_methods: ['card', 'boleto'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: '6',
-    name: 'Bicicleta',
-    description: 'Bicicleta de montanha',
-    price: 120,
-    imageUrl:
-      'https://plus.unsplash.com/premium_photo-1678718713393-2b88cde9605b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    is_new: true,
-    is_active: true,
-    accept_trade: true,
-    user_id: '6',
-    seller: 'Vendedor 6',
-    sellerImageUrl:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    payment_methods: ['card', 'boleto'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: '7',
-    name: 'Camiseta',
-    description: 'Camiseta de futebol',
-    price: 59.9,
-    imageUrl:
-      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    is_new: false,
-    is_active: true,
-    accept_trade: false,
-    user_id: '7',
-    seller: 'Vendedor 7',
-    sellerImageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    payment_methods: ['card', 'boleto'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-]
+import { getUserProducts } from '@/https/get-user-products'
+import type { ProductDTO } from '@/dtos/product'
 
 export function MyAds() {
   const [selectOptions, setSelectOptions] = useState([
@@ -154,12 +31,62 @@ export function MyAds() {
   ])
   const [optionSelected, setOptionSelected] = useState(selectOptions[0])
 
+  const [products, setProducts] = useState<ProductDTO[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+
   function handleSelectOption(value: string) {
     const option = selectOptions.find(o => o.value === value)
     if (option) {
       setOptionSelected(option)
     }
   }
+
+  const toast = useToast()
+
+  async function fetchUserProducts() {
+    try {
+      setIsLoading(true)
+
+      const { products } = await getUserProducts()
+
+      setProducts(products)
+    } catch (error) {
+      console.log(error)
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title="Não foi possível carregar os produtos"
+            description="Tente novamente ou mais tarde."
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchUserProducts()
+  }, [])
+
+  const filteredProducts = products.filter(product => {
+    if (optionSelected.value === 'active' && product.is_active) {
+      return product
+    }
+
+    if (optionSelected.value === 'inactive' && !product.is_active) {
+      return product
+    }
+
+    if (optionSelected.value === 'all') {
+      return product
+    }
+  })
 
   return (
     <VStack className="flex-1 pt-9 px-6">
@@ -168,7 +95,7 @@ export function MyAds() {
       {/* AMOUNT AND FILTER */}
       <HStack className="items-center justify-between mb-8">
         <Text className="text-gray-600 text-sm font-regular leading-snug">
-          9 anúncios
+          {filteredProducts.length} anúncios
         </Text>
 
         <Select
@@ -197,7 +124,7 @@ export function MyAds() {
         </Select>
       </HStack>
 
-      <Items data={PRODUCTS} />
+      {isLoading ? <Loading /> : <Items data={filteredProducts} />}
     </VStack>
   )
 }

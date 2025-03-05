@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
@@ -10,24 +10,24 @@ import type { AppRoutesNavigationProps } from '@/routes/app.routes'
 import { ProductCard } from '@/components/product-card'
 import { ListEmpty } from '@/components/list-empty'
 
-export type Product = ProductDTO & {
-  seller: string
-  sellerImageUrl: string
-  imageUrl: string
+type ItemsProps = {
+  data: ProductDTO[]
 }
 
-type ItemsProps = {
-  data: Product[]
-}
+const NUMBER_OF_COLUMNS = 2
 
 export function Items({ data }: ItemsProps) {
   const navigate = useNavigation<AppRoutesNavigationProps>()
 
-  const [products, setProducts] = useState<Product[]>(data)
+  const [products, setProducts] = useState<ProductDTO[]>([])
 
   function handleNavigateToAdDetail(adId: string) {
     navigate.navigate('adDetails', { adId })
   }
+
+  useEffect(() => {
+    setProducts(data)
+  }, [data])
 
   return (
     <VStack className="flex-1 gap-6">
@@ -37,8 +37,11 @@ export function Items({ data }: ItemsProps) {
           data={products}
           keyExtractor={item => item.id}
           renderItem={({ item, index }) => {
-            // CHECK IF THE NUMBER OF PRODUCTS IS ODD AND IS THE LAST ITEM
-            if (products.length % 2 !== 0 && index === products.length - 1) {
+            // CHECK IF THE NUMBER OF PRODUCTS ISN'T DIVISIBLE BY NUMBER OF COLUMNS, AND IF IS THE LAST ITEM
+            if (
+              index === products.length - 1 &&
+              products.length % NUMBER_OF_COLUMNS !== 0
+            ) {
               return (
                 <>
                   <ProductCard
@@ -47,7 +50,12 @@ export function Items({ data }: ItemsProps) {
                     onPress={() => handleNavigateToAdDetail(item.id)}
                   />
 
-                  <View className="flex-1" />
+                  {Array.from({
+                    length:
+                      NUMBER_OF_COLUMNS - (products.length % NUMBER_OF_COLUMNS),
+                  }).map((_, index) => (
+                    <View key={`empty-box-${index + 1}`} className="flex-1" />
+                  ))}
                 </>
               )
             }
