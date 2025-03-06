@@ -10,8 +10,9 @@ import { Image } from '@/components/ui/image'
 
 import { colors } from '@/styles/colors'
 
-export type ImageProps = {
-  id: string
+type ImageProps = {
+  type: string
+  name: string
   uri: string
 }
 

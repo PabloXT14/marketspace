@@ -7,21 +7,12 @@ import { VStack } from '@/components/ui/vstack'
 import { UserPhoto } from '@/components/user-photo'
 import { Tag, TagText } from '@/components/tag'
 
-import type { ProductDTO } from '@/dtos/product'
-
 import { colors } from '@/styles/colors'
 
+import type { CreateAdFormProps } from '../create-ad/form'
+
 type ProductInfoProps = {
-  data: Pick<
-    ProductDTO,
-    | 'name'
-    | 'description'
-    | 'price'
-    | 'is_new'
-    | 'accept_trade'
-    | 'user_id'
-    | 'payment_methods'
-  >
+  data: CreateAdFormProps
 }
 
 const paymentMethodsOptions = {
@@ -48,6 +39,18 @@ const paymentMethodsOptions = {
 }
 
 export function ProductInfo({ data }: ProductInfoProps) {
+  const paymentMethods =
+    data.paymentMethods as (keyof typeof paymentMethodsOptions)[]
+
+  const numericPrice = Number(data.price.toString().replace(',', '.'))
+  const priceFormatted = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  })
+    .format(Number(numericPrice))
+    .replace('R$', '')
+    .trim()
+
   return (
     <VStack className="flex-1 p-6 gap-6">
       {/* OWNER */}
@@ -67,7 +70,7 @@ export function ProductInfo({ data }: ProductInfoProps) {
       <VStack className="gap-2 items-start">
         <Tag variant="secondary">
           <TagText variant="secondary">
-            {data.is_new ? 'NOVO' : 'USADO'}
+            {data.condition === 'new' ? 'NOVO' : 'USADO'}
           </TagText>
         </Tag>
 
@@ -76,7 +79,7 @@ export function ProductInfo({ data }: ProductInfoProps) {
             className="flex-1 text-gray-700 text-xl font-bold leading-snug"
             numberOfLines={1}
           >
-            {data.name}
+            {data.title}
           </Text>
 
           <HStack className="gap-1 items-baseline">
@@ -84,13 +87,7 @@ export function ProductInfo({ data }: ProductInfoProps) {
               R$
             </Text>
             <Text className="text-blue-500 text-xl font-bold leading-snug">
-              {Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-              })
-                .format(data.price)
-                .replace('R$', '')
-                .trim()}
+              {priceFormatted}
             </Text>
           </HStack>
         </HStack>
@@ -107,7 +104,7 @@ export function ProductInfo({ data }: ProductInfoProps) {
             Aceita troca?
           </Text>
           <Text className="text-gray-600 text-sm font-regular leading-snug">
-            {data.accept_trade ? 'Sim' : 'Não'}
+            {data.acceptTrade ? 'Sim' : 'Não'}
           </Text>
         </HStack>
 
@@ -116,7 +113,7 @@ export function ProductInfo({ data }: ProductInfoProps) {
             Meios de pagamento:
           </Text>
 
-          {data.payment_methods.map(paymentMethod => {
+          {paymentMethods.map(paymentMethod => {
             if (!paymentMethodsOptions[paymentMethod]) return null
 
             return (
