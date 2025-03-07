@@ -22,6 +22,7 @@ import { colors } from '@/styles/colors'
 
 import Logo from '@/assets/logo.svg'
 import { createUser } from '@/https/create-user'
+import { AxiosError, isAxiosError } from 'axios'
 
 const MAX_IMAGE_SIZE_MB = 5
 
@@ -191,13 +192,20 @@ export function SignUp() {
     } catch (error) {
       console.log(error)
 
+      const errorMessage = isAxiosError(error) && error.response?.data?.message
+
       toast.show({
         placement: 'top',
         render: ({ id }) => (
           <ToastMessage
             id={id}
             action="error"
-            title="Erro ao criar usuário! Tente novamente ou mais tarde"
+            title="Erro ao criar usuário"
+            description={
+              error instanceof Error
+                ? errorMessage
+                : 'Tente novamente ou mais tarde.'
+            }
             onClose={() => toast.close(id)}
           />
         ),
