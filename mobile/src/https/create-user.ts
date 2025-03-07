@@ -21,7 +21,7 @@ export async function createUser({ data }: CreateUserRequest) {
   formData.append('password', password)
   formData.append('avatar', avatar)
 
-  const response = await api.post('/users', formData, {
+  await api.post('/users', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

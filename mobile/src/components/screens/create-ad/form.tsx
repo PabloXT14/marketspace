@@ -171,9 +171,7 @@ export function Form() {
     }
   }
 
-  async function handleCreateAd(data: FormData) {
-    console.log(data)
-
+  async function handleGoToAdPreview(data: FormData) {
     navigate.navigate('adPreview', {
       data,
       action: 'create',
@@ -397,7 +395,7 @@ export function Form() {
           className="flex-1"
           type="black"
           isLoading={isSubmitting}
-          onPress={handleSubmit(handleCreateAd)}
+          onPress={handleSubmit(handleGoToAdPreview)}
         >
           <ButtonText type="black">Avançar</ButtonText>
         </Button>

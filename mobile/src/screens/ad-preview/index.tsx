@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { ScrollView, StatusBar } from 'react-native'
 import { ArrowLeft, Tag } from 'phosphor-react-native'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
@@ -11,19 +11,27 @@ import { Text } from '@/components/ui/text'
 import { ImagesCarousel } from '@/components/images-carousel'
 import { ProductInfo } from '@/components/screens/ad-preview/product-info'
 import { Button, ButtonText } from '@/components/button'
+import { ToastMessage } from '@/components/toast-message'
 
 import { colors } from '@/styles/colors'
 
 import type { CreateAdFormProps } from '@/components/screens/create-ad/form'
 import type { AppRoutesNavigationProps } from '@/routes/app.routes'
+import type { AllowedPaymentMethods } from '@/dtos/product'
+import { useToast } from '@/components/ui/toast'
+import { createProduct } from '@/https/create-product'
+import { createProductImages } from '@/https/create-product-images'
 
 type RouteParams = {
   data: CreateAdFormProps
 }
 
 export function AdPreview() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const navigate = useNavigation<AppRoutesNavigationProps>()
   const route = useRoute()
+  const toast = useToast()
 
   const { data } = route.params as RouteParams
 
@@ -31,8 +39,60 @@ export function AdPreview() {
     navigate.goBack()
   }
 
-  function handleCreateAd() {
-    console.log(data)
+  async function handleCreateAd() {
+    try {
+      setIsSubmitting(true)
+
+      const numericPrice = Number(data.price.toString().replace(',', '.'))
+
+      const { product } = await createProduct({
+        name: data.title,
+        description: data.description,
+        price: numericPrice,
+        is_new: data.condition === 'new',
+        accept_trade: data.acceptTrade,
+        payment_methods: data.paymentMethods as AllowedPaymentMethods[],
+      })
+
+      const { images } = await createProductImages({
+        data: {
+          product_id: product.id,
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          images: data.images as any,
+        },
+      })
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="success"
+            title="Anúncio criado com sucesso!"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+
+      navigate.navigate('myAds')
+    } catch (error) {
+      console.log(error)
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title="Erro ao criar anúncio!"
+            description="Tente novamente ou mais tarde"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   useFocusEffect(
@@ -76,7 +136,11 @@ export function AdPreview() {
           <ButtonText type="gray">Voltar e editar</ButtonText>
         </Button>
 
-        <Button className="flex-1" onPress={handleCreateAd}>
+        <Button
+          className="flex-1"
+          onPress={handleCreateAd}
+          isLoading={isSubmitting}
+        >
           <Tag size={16} color={colors.gray[200]} />
 
           <ButtonText>Publicar</ButtonText>

@@ -10,9 +10,12 @@ export type PaymentMethod = {
   name: string
 }
 
-type ProductImage = {
+export type ProductImage = {
   id: string
   path: string
+  product_id?: string
+  created_at?: string
+  updated_at?: string
 }
 
 export type ProductDTO = {

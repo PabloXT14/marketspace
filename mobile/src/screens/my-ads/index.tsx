@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
+
 import { VStack } from '@/components/ui/vstack'
 
 import { HStack } from '@/components/ui/hstack'
@@ -70,9 +72,11 @@ export function MyAds() {
     }
   }
 
-  useEffect(() => {
-    fetchUserProducts()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserProducts()
+    }, [])
+  )
 
   const filteredProducts = products.filter(product => {
     if (optionSelected.value === 'active' && product.is_active) {
@@ -89,7 +93,7 @@ export function MyAds() {
   })
 
   return (
-    <VStack className="flex-1 pt-9 px-6">
+    <VStack className="flex-1 pt-9 px-6 bg-gray-200">
       <Header />
 
       {/* AMOUNT AND FILTER */}
