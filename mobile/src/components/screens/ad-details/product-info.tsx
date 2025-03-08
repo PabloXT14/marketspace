@@ -10,18 +10,10 @@ import { Tag, TagText } from '@/components/tag'
 import type { ProductDTO } from '@/dtos/product'
 
 import { colors } from '@/styles/colors'
+import { api } from '@/services/api'
 
 type ProductInfoProps = {
-  data: Pick<
-    ProductDTO,
-    | 'name'
-    | 'description'
-    | 'price'
-    | 'is_new'
-    | 'accept_trade'
-    | 'user_id'
-    | 'payment_methods'
-  >
+  data: ProductDTO
 }
 
 const paymentMethodsOptions = {
@@ -48,18 +40,26 @@ const paymentMethodsOptions = {
 }
 
 export function ProductInfo({ data }: ProductInfoProps) {
+  const priceFormatted = Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  })
+    .format(data.price)
+    .replace('R$', '')
+    .trim()
+
   return (
     <VStack className="flex-1 p-6 gap-6">
       {/* OWNER */}
       <HStack className="items-center gap-2">
         <UserPhoto
-          source="https://github.com/orodrigogo.png"
-          alt="User photo"
+          source={`${api.defaults.baseURL}/images/${data.user.avatar}`}
+          alt={data.user.name}
           size="xs"
         />
 
         <Text className="text-gray-700 text-sm font-regular leading-snug">
-          Rodrigo Gonçalves
+          {data.user.name}
         </Text>
       </HStack>
 
@@ -84,13 +84,7 @@ export function ProductInfo({ data }: ProductInfoProps) {
               R$
             </Text>
             <Text className="text-blue-500 text-xl font-bold leading-snug">
-              {Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-              })
-                .format(data.price)
-                .replace('R$', '')
-                .trim()}
+              {priceFormatted}
             </Text>
           </HStack>
         </HStack>
@@ -117,13 +111,13 @@ export function ProductInfo({ data }: ProductInfoProps) {
           </Text>
 
           {data.payment_methods.map(paymentMethod => {
-            if (!paymentMethodsOptions[paymentMethod]) return null
+            if (!paymentMethodsOptions[paymentMethod.key]) return null
 
             return (
-              <HStack key={paymentMethod} className="gap-2 items-center">
-                {paymentMethodsOptions[paymentMethod]?.icon}
+              <HStack key={paymentMethod.key} className="gap-2 items-center">
+                {paymentMethodsOptions[paymentMethod.key]?.icon}
                 <Text className="text-gray-600 text-sm font-regular leading-snug">
-                  {paymentMethodsOptions[paymentMethod]?.label}
+                  {paymentMethodsOptions[paymentMethod.key]?.label}
                 </Text>
               </HStack>
             )
