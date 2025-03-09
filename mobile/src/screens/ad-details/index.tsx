@@ -26,6 +26,7 @@ import { getProductDetails } from '@/https/get-product-details'
 import { api } from '@/services/api'
 
 import { colors } from '@/styles/colors'
+import { updateProductVisibility } from '@/https/update-product-visibility'
 
 type RouteParams = {
   adId: string
@@ -41,6 +42,8 @@ export function AdDetails() {
 
   const [product, setProduct] = useState<ProductDTO>({} as ProductDTO)
   const [isLoading, setIsLoading] = useState(true)
+
+  const [isUpdating, setUpdating] = useState(false)
 
   function handleGoBack() {
     navigate.goBack()
@@ -76,6 +79,51 @@ export function AdDetails() {
       setProduct({} as ProductDTO)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  async function toggleProductVisibility() {
+    try {
+      setUpdating(true)
+
+      await updateProductVisibility({
+        id: product.id,
+        is_active: !product.is_active,
+      })
+
+      setProduct({
+        ...product,
+        is_active: !product.is_active,
+      })
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="success"
+            title="Visibilidade alterada com sucesso!"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    } catch (error) {
+      console.log(error)
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title=" Não foi possível alterar a visibilidade do produto"
+            description="Tente novamente ou mais tarde."
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    } finally {
+      setUpdating(false)
     }
   }
 
@@ -119,7 +167,11 @@ export function AdDetails() {
       </ScrollView>
 
       {isMyAd ? (
-        <MyAdFooter isAdActive={product.is_active!} />
+        <MyAdFooter
+          isAdActive={product.is_active!}
+          isUpdating={isUpdating}
+          onToggleVisibility={toggleProductVisibility}
+        />
       ) : (
         <ComumFooter productPrice={product.price} />
       )}
