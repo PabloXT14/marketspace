@@ -10,6 +10,8 @@ import { Tag, TagText } from '@/components/tag'
 import { colors } from '@/styles/colors'
 
 import type { CreateAdFormProps } from '../create-ad/form'
+import { useAuthStore } from '@/store/auth-store'
+import { api } from '@/services/api'
 
 type ProductInfoProps = {
   data: CreateAdFormProps
@@ -39,6 +41,8 @@ const paymentMethodsOptions = {
 }
 
 export function ProductInfo({ data }: ProductInfoProps) {
+  const user = useAuthStore(state => state.user)
+
   const paymentMethods =
     data.paymentMethods as (keyof typeof paymentMethodsOptions)[]
 
@@ -56,13 +60,13 @@ export function ProductInfo({ data }: ProductInfoProps) {
       {/* OWNER */}
       <HStack className="items-center gap-2">
         <UserPhoto
-          source="https://github.com/orodrigogo.png"
-          alt="User photo"
+          source={`${api.defaults.baseURL}/images/${user?.avatar}`}
+          alt={user?.name}
           size="xs"
         />
 
         <Text className="text-gray-700 text-sm font-regular leading-snug">
-          Rodrigo Gonçalves
+          {user?.name}
         </Text>
       </HStack>
 

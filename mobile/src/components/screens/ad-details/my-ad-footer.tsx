@@ -5,14 +5,17 @@ import { VStack } from '@/components/ui/vstack'
 import { Button, ButtonText } from '@/components/button'
 
 import { colors } from '@/styles/colors'
+import { DeleteButtonAlert } from './delete-button-alert'
 
 type MyAdFooterProps = {
+  productId: string
   isAdActive: boolean
   isUpdating: boolean
   onToggleVisibility: () => void
 }
 
 export function MyAdFooter({
+  productId,
   isAdActive,
   isUpdating,
   onToggleVisibility,
@@ -37,11 +40,7 @@ export function MyAdFooter({
         </Button>
       )}
 
-      <Button type="gray">
-        <TrashSimple size={20} color={colors.gray[500]} />
-
-        <ButtonText type="gray">Excluir anúncio</ButtonText>
-      </Button>
+      <DeleteButtonAlert productId={productId} />
     </VStack>
   )
 }

@@ -168,6 +168,7 @@ export function AdDetails() {
 
       {isMyAd ? (
         <MyAdFooter
+          productId={product.id}
           isAdActive={product.is_active!}
           isUpdating={isUpdating}
           onToggleVisibility={toggleProductVisibility}
