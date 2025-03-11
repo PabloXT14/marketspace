@@ -174,7 +174,12 @@ export function AdDetails() {
           onToggleVisibility={toggleProductVisibility}
         />
       ) : (
-        <ComumFooter productPrice={product.price} />
+        <ComumFooter
+          data={{
+            productPrice: product.price,
+            ownerPhone: product.user.tel,
+          }}
+        />
       )}
     </VStack>
   )
