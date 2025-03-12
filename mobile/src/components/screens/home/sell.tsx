@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useCallback, useState } from 'react'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { TouchableOpacity, View } from 'react-native'
 import { Tag, ArrowRight } from 'phosphor-react-native'
 
@@ -29,9 +29,11 @@ export function Sell() {
     navigate.navigate('myAds')
   }
 
-  useEffect(() => {
-    fetchProducts()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts()
+    }, [])
+  )
 
   const countActiveProducts = products.filter(
     product => product.is_active

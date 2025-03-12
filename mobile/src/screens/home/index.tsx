@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
 import { MagnifyingGlass } from 'phosphor-react-native'
 import { useDebounce } from '@uidotdev/usehooks'
 
@@ -78,14 +79,16 @@ export function Home() {
     }
   }
 
-  useEffect(() => {
-    fetchProducts({
-      is_new: filterOptions.is_new,
-      accept_trade: filterOptions.accept_trade,
-      payment_methods: filterOptions.payment_methods,
-      query: debouncedSearch,
-    })
-  }, [filterOptions, debouncedSearch])
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts({
+        is_new: filterOptions.is_new,
+        accept_trade: filterOptions.accept_trade,
+        payment_methods: filterOptions.payment_methods,
+        query: debouncedSearch,
+      })
+    }, [filterOptions, debouncedSearch])
+  )
 
   return (
     <VStack className="flex-1 gap-10 pt-9 px-6 bg-gray-200">
@@ -126,7 +129,7 @@ export function Home() {
           </Input>
         </VStack>
 
-        {isLoading ? <Loading /> : <Items data={products} />}
+        <Items data={products} />
       </VStack>
     </VStack>
   )

@@ -128,7 +128,7 @@ export function MyAds() {
         </Select>
       </HStack>
 
-      {isLoading ? <Loading /> : <Items data={filteredProducts} />}
+      <Items data={filteredProducts} />
     </VStack>
   )
 }
