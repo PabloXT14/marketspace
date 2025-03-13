@@ -18,7 +18,7 @@ import { View } from 'react-native'
 
 import type { CreateAdFormProps } from '@/components/screens/create-ad/form'
 
-type AppRoutesProps = {
+export type AppRoutesProps = {
   home: undefined
   adDetails: {
     adId: string

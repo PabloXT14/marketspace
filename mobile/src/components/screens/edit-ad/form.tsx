@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Plus, X } from 'phosphor-react-native'
 import { useForm, Controller } from 'react-hook-form'
@@ -6,7 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
-import { useNavigation } from '@react-navigation/native'
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native'
 
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
@@ -24,8 +28,14 @@ import { colors } from '@/styles/colors'
 import { Switch } from '@/components/switch'
 
 import type { AppRoutesNavigationProps } from '@/routes/app.routes'
+import type { ProductDTO } from '@/dtos/product'
+
 import { CancelModal } from './cancel-modal'
+
 import { formatCurrencyMask } from '@/utils/format-currency-mask'
+import { getProductDetails } from '@/https/get-product-details'
+import { Loading } from '@/components/loading'
+import { api } from '@/services/api'
 
 const MAX_IMAGE_SIZE_MB = 5
 const USER_NAME = 'John Doe'
@@ -66,33 +76,30 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>
 
+type RouteParams = {
+  adId: string
+}
+
 export function Form() {
+  const route = useRoute()
+  const toast = useToast()
+  const navigate = useNavigation<AppRoutesNavigationProps>()
+
+  const { adId } = route.params as RouteParams
+
+  const [isLoading, setIsLoading] = useState(false)
+
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, defaultValues },
     reset,
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      images: [
-        {
-          name: 'image.png',
-          type: 'image/png',
-          uri: 'https://plus.unsplash.com/premium_photo-1678718713393-2b88cde9605b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmlrZXxlbnwwfDB8MHx8fDA%3D',
-        },
-      ],
-      title: 'Bicicleta',
-      description: 'Bicicleta de montanha',
-      condition: 'used',
-      price: '1.000,00',
-      acceptTrade: true,
-      paymentMethods: ['boleto', 'pix', 'deposit'],
+      images: [],
     },
   })
-
-  const toast = useToast()
-  const navigate = useNavigation<AppRoutesNavigationProps>()
 
   async function handleSelectImage(
     currentImages: FormData['images'],
@@ -174,7 +181,7 @@ export function Form() {
     }
   }
 
-  async function handleCreateAd(data: FormData) {
+  async function handleGoToAdPreview(data: FormData) {
     console.log(data)
 
     navigate.navigate('adPreview', {
@@ -187,6 +194,77 @@ export function Form() {
     reset()
     navigate.goBack()
   }
+
+  async function fetchProductDetails() {
+    try {
+      setIsLoading(true)
+
+      const { product } = await getProductDetails({ id: adId })
+
+      if (!product) {
+        return toast.show({
+          placement: 'top',
+          render: ({ id }) => (
+            <ToastMessage
+              id={id}
+              action="error"
+              title="Produto nao encontrado"
+              description="Tente novamente ou mais tarde."
+              onClose={() => toast.close(id)}
+            />
+          ),
+        })
+      }
+
+      const formattedPrice = formatCurrencyMask(
+        (product?.price >= 1 ? product.price * 100 : product.price).toString()
+      )
+
+      reset({
+        images: product.product_images.map(image => ({
+          name: image?.path,
+          type: `image/${image?.path.split('.').pop()}`,
+          uri: `${api.defaults.baseURL}/images/${image.path}`,
+        })),
+
+        title: product.name,
+        description: product.description,
+        condition: product.is_new ? 'new' : 'used',
+        price: formattedPrice,
+        acceptTrade: product.accept_trade,
+        paymentMethods: product.payment_methods as unknown as string[],
+      })
+    } catch (error) {
+      console.log(error)
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title="Não foi possível carregar os dados do produto"
+            description="Tente novamente ou mais tarde."
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProductDetails()
+    }, [adId])
+  )
+
+  if (isLoading) {
+    return <Loading />
+  }
+
+  // console.log('TOUCHED', )
 
   return (
     <VStack className="flex-1">
@@ -212,7 +290,7 @@ export function Form() {
             render={({ field: { value: images, onChange } }) => (
               <VStack className="gap-2">
                 <HStack className="gap-2">
-                  {images.map(image => (
+                  {images?.map(image => (
                     <VStack
                       key={image.name}
                       className="relative size-28 rounded-lg overflow-hidden"
@@ -234,7 +312,7 @@ export function Form() {
                     </VStack>
                   ))}
 
-                  {images.length < 3 && (
+                  {images?.length < 3 && (
                     <TouchableOpacity
                       onPress={() => handleSelectImage(images, onChange)}
                       className="size-28 rounded-lg bg-gray-300 items-center justify-center"
@@ -399,8 +477,9 @@ export function Form() {
         <Button
           className="flex-1"
           type="black"
+          // isDisabled={control === defaultValues}
           isLoading={isSubmitting}
-          onPress={handleSubmit(handleCreateAd)}
+          onPress={handleSubmit(handleGoToAdPreview)}
         >
           <ButtonText type="black">Avançar</ButtonText>
         </Button>

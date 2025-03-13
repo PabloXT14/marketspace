@@ -10,7 +10,7 @@ export function EditAd() {
     <VStack className="bg-gray-200 flex-1 pt-9">
       <Header />
 
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Form />
       </ScrollView>
     </VStack>

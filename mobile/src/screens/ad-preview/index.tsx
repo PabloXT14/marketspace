@@ -16,14 +16,19 @@ import { ToastMessage } from '@/components/toast-message'
 import { colors } from '@/styles/colors'
 
 import type { CreateAdFormProps } from '@/components/screens/create-ad/form'
-import type { AppRoutesNavigationProps } from '@/routes/app.routes'
+import type {
+  AppRoutesNavigationProps,
+  AppRoutesProps,
+} from '@/routes/app.routes'
 import type { AllowedPaymentMethods } from '@/dtos/product'
+
 import { useToast } from '@/components/ui/toast'
 import { createProduct } from '@/https/create-product'
 import { createProductImages } from '@/https/create-product-images'
 
 type RouteParams = {
   data: CreateAdFormProps
+  action: AppRoutesProps['adPreview']['action']
 }
 
 export function AdPreview() {
@@ -33,7 +38,7 @@ export function AdPreview() {
   const route = useRoute()
   const toast = useToast()
 
-  const { data } = route.params as RouteParams
+  const { data, action } = route.params as RouteParams
 
   function handleGoBack() {
     navigate.goBack()
@@ -95,6 +100,10 @@ export function AdPreview() {
     }
   }
 
+  async function handleUpdateAd() {
+    console.log(data)
+  }
+
   useFocusEffect(
     useCallback(() => {
       // Configuração da StatusBar ao entrar na tela
@@ -138,7 +147,7 @@ export function AdPreview() {
 
         <Button
           className="flex-1"
-          onPress={handleCreateAd}
+          onPress={action === 'create' ? handleCreateAd : handleUpdateAd}
           isLoading={isSubmitting}
         >
           <Tag size={16} color={colors.gray[200]} />
