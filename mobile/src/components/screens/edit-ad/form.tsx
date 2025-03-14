@@ -11,6 +11,7 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native'
+import { isEqual } from 'lodash'
 
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
@@ -92,6 +93,7 @@ export function Form() {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting, defaultValues },
     reset,
   } = useForm<FormData>({
@@ -182,7 +184,7 @@ export function Form() {
   }
 
   async function handleGoToAdPreview(data: FormData) {
-    console.log(data)
+    // console.log(data)
 
     navigate.navigate('adPreview', {
       data,
@@ -232,7 +234,7 @@ export function Form() {
         condition: product.is_new ? 'new' : 'used',
         price: formattedPrice,
         acceptTrade: product.accept_trade,
-        paymentMethods: product.payment_methods as unknown as string[],
+        paymentMethods: product.payment_methods.map(method => method.key),
       })
     } catch (error) {
       console.log(error)
@@ -264,7 +266,11 @@ export function Form() {
     return <Loading />
   }
 
-  // console.log('TOUCHED', )
+  const formValues = watch()
+  const isModified = !isEqual(defaultValues, formValues)
+
+  // console.log('Current form values: ', formValues)
+  // console.log('Default values: ', defaultValues)
 
   return (
     <VStack className="flex-1">
@@ -477,7 +483,7 @@ export function Form() {
         <Button
           className="flex-1"
           type="black"
-          // isDisabled={control === defaultValues}
+          isDisabled={!isModified}
           isLoading={isSubmitting}
           onPress={handleSubmit(handleGoToAdPreview)}
         >
