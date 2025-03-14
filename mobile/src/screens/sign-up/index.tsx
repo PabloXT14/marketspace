@@ -339,7 +339,7 @@ export function SignUp() {
                     secureTextEntry={!isConfirmPasswordVisible}
                     value={value}
                     onChangeText={onChange}
-                    onSubmitEditing={() => handleSubmit(handleSignUp)}
+                    onSubmitEditing={handleSubmit(handleSignUp)}
                     returnKeyType="send"
                   />
 

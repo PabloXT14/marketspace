@@ -133,7 +133,7 @@ export function SignIn() {
                     returnKeyType="send"
                     value={value}
                     onChangeText={onChange}
-                    onSubmitEditing={() => handleSubmit(handleSignIn)}
+                    onSubmitEditing={handleSubmit(handleSignIn)}
                   />
 
                   <TouchableOpacity
