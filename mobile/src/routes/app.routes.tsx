@@ -1,4 +1,4 @@
-import { Platform, Pressable, Text } from 'react-native'
+import { Platform, Pressable } from 'react-native'
 import {
   createBottomTabNavigator,
   type BottomTabNavigationProp,
@@ -16,8 +16,6 @@ import { colors } from '@/styles/colors'
 import { SignOutAlert } from '@/components/sign-out-alert'
 import { View } from 'react-native'
 
-import type { CreateAdFormProps } from '@/components/screens/create-ad/form'
-
 export type AppRoutesProps = {
   home: undefined
   adDetails: {
@@ -26,7 +24,6 @@ export type AppRoutesProps = {
   myAds: undefined
   createAd: undefined
   adPreview: {
-    data: CreateAdFormProps
     action: 'create' | 'update'
   }
   editAd: undefined

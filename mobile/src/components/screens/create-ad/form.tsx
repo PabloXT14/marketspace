@@ -26,6 +26,7 @@ import { CancelModal } from './cancel-modal'
 import { formatCurrencyMask } from '@/utils/format-currency-mask'
 
 import type { AppRoutesNavigationProps } from '@/routes/app.routes'
+import { useProductStore } from '@/store/product-store'
 
 const MAX_IMAGE_SIZE_MB = 5
 const USER_NAME = 'John Doe'
@@ -74,7 +75,6 @@ export function Form() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -88,6 +88,7 @@ export function Form() {
     },
   })
 
+  const setProductPreview = useProductStore(state => state.setProductPreview)
   const toast = useToast()
   const navigate = useNavigation<AppRoutesNavigationProps>()
 
@@ -172,8 +173,9 @@ export function Form() {
   }
 
   async function handleGoToAdPreview(data: FormData) {
+    setProductPreview(data)
+
     navigate.navigate('adPreview', {
-      data,
       action: 'create',
     })
   }

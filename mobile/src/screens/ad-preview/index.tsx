@@ -3,6 +3,7 @@ import { ScrollView, StatusBar } from 'react-native'
 import { ArrowLeft, Tag } from 'phosphor-react-native'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
+import { isEqual } from 'lodash'
 
 import { VStack } from '@/components/ui/vstack'
 import { HStack } from '@/components/ui/hstack'
@@ -15,7 +16,6 @@ import { ToastMessage } from '@/components/toast-message'
 
 import { colors } from '@/styles/colors'
 
-import type { CreateAdFormProps } from '@/components/screens/create-ad/form'
 import type {
   AppRoutesNavigationProps,
   AppRoutesProps,
@@ -27,22 +27,22 @@ import { createProduct } from '@/https/create-product'
 import { createProductImages } from '@/https/create-product-images'
 import { updateProduct } from '@/https/update-product'
 import { useProductStore } from '@/store/product-store'
-import { isEqual } from 'lodash'
 
 type RouteParams = {
-  data: CreateAdFormProps
   action: AppRoutesProps['adPreview']['action']
 }
 
 export function AdPreview() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const product = useProductStore(state => state.product)
   const navigate = useNavigation<AppRoutesNavigationProps>()
   const route = useRoute()
   const toast = useToast()
 
-  const { data, action } = route.params as RouteParams
+  const product = useProductStore(state => state.product)
+  const productPreview = useProductStore(state => state.productPreview)
+
+  const { action } = route.params as RouteParams
 
   function handleGoBack() {
     navigate.goBack()
@@ -52,22 +52,25 @@ export function AdPreview() {
     try {
       setIsSubmitting(true)
 
-      const numericPrice = Number(data.price.toString().replace(',', '.'))
+      const numericPrice = Number(
+        productPreview.price.toString().replace(',', '.')
+      )
 
       const { product } = await createProduct({
-        name: data.title,
-        description: data.description,
+        name: productPreview.title,
+        description: productPreview.description,
         price: numericPrice,
-        is_new: data.condition === 'new',
-        accept_trade: data.acceptTrade,
-        payment_methods: data.paymentMethods as AllowedPaymentMethods[],
+        is_new: productPreview.condition === 'new',
+        accept_trade: productPreview.acceptTrade,
+        payment_methods:
+          productPreview.paymentMethods as AllowedPaymentMethods[],
       })
 
       const { images } = await createProductImages({
         data: {
           product_id: product.id,
           // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-          images: data.images as any,
+          images: productPreview.images as any,
         },
       })
 
@@ -108,24 +111,30 @@ export function AdPreview() {
     try {
       setIsSubmitting(true)
 
-      const numericPrice = Number(data.price.toString().replace(',', '.'))
-      const isNew = data.condition === 'new'
-      const paymentMethods = data.paymentMethods as AllowedPaymentMethods[]
+      const numericPrice = Number(
+        productPreview.price.toString().replace(',', '.')
+      )
+      const isNew = productPreview.condition === 'new'
+      const paymentMethods =
+        productPreview.paymentMethods as AllowedPaymentMethods[]
 
       await updateProduct({
         product_id: product.id,
         data: {
-          name: data.title === product.name ? undefined : data.title,
-          description:
-            data.description === product.description
+          name:
+            productPreview.title === product.name
               ? undefined
-              : data.description,
+              : productPreview.title,
+          description:
+            productPreview.description === product.description
+              ? undefined
+              : productPreview.description,
           price: numericPrice === product.price ? undefined : numericPrice,
           is_new: isNew === product.is_new ? undefined : isNew,
           accept_trade:
-            data.acceptTrade === product.accept_trade
+            productPreview.acceptTrade === product.accept_trade
               ? undefined
-              : data.acceptTrade,
+              : productPreview.acceptTrade,
           payment_methods: isEqual(paymentMethods, product.payment_methods)
             ? undefined
             : paymentMethods,
@@ -200,10 +209,10 @@ export function AdPreview() {
         </Text>
       </VStack>
 
-      <ImagesCarousel data={data?.images} />
+      <ImagesCarousel data={productPreview?.images} />
 
       <ScrollView>
-        <ProductInfo data={data} />
+        <ProductInfo data={productPreview} />
       </ScrollView>
 
       {/* FOOTER */}

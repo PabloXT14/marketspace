@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Plus, X } from 'phosphor-react-native'
 import { useForm, Controller } from 'react-hook-form'
@@ -27,10 +27,9 @@ import { Switch } from '@/components/switch'
 import type { AppRoutesNavigationProps } from '@/routes/app.routes'
 
 import { CancelModal } from './cancel-modal'
+import { Loading } from '@/components/loading'
 
 import { formatCurrencyMask } from '@/utils/format-currency-mask'
-import { getProductDetails } from '@/https/get-product-details'
-import { Loading } from '@/components/loading'
 import { api } from '@/services/api'
 import { useProductStore } from '@/store/product-store'
 
@@ -74,9 +73,11 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>
 
 export function Form() {
-  const product = useProductStore(state => state.product)
   const toast = useToast()
   const navigate = useNavigation<AppRoutesNavigationProps>()
+
+  const product = useProductStore(state => state.product)
+  const setProductPreview = useProductStore(state => state.setProductPreview)
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -174,10 +175,9 @@ export function Form() {
   }
 
   async function handleGoToAdPreview(data: FormData) {
-    // console.log(data)
+    setProductPreview(data)
 
     navigate.navigate('adPreview', {
-      data,
       action: 'update',
     })
   }
@@ -212,11 +212,9 @@ export function Form() {
     setIsLoading(false)
   }
 
-  useFocusEffect(
-    useCallback(() => {
-      setProductDataOnForm()
-    }, [product])
-  )
+  useEffect(() => {
+    setProductDataOnForm()
+  }, [product])
 
   if (isLoading) {
     return <Loading />

@@ -37,13 +37,12 @@ export function AdDetails() {
   const navigate = useNavigation<AppRoutesNavigationProps>()
   const route = useRoute()
   const user = useAuthStore(state => state.user)
-  const { product: productStore, setProduct: setProductStore } =
-    useProductStore(state => state)
   const toast = useToast()
 
-  const { adId } = route.params as RouteParams
+  const product = useProductStore(state => state.product)
+  const setProduct = useProductStore(state => state.setProduct)
 
-  const [product, setProduct] = useState<ProductDTO>({} as ProductDTO)
+  const { adId } = route.params as RouteParams
   const [isLoading, setIsLoading] = useState(true)
 
   const [isUpdating, setUpdating] = useState(false)
@@ -63,7 +62,6 @@ export function AdDetails() {
       const { product } = await getProductDetails({ id: adId })
 
       setProduct(product)
-      setProductStore(product)
     } catch (error) {
       console.log(error)
 
@@ -157,7 +155,7 @@ export function AdDetails() {
           <ArrowLeft size={24} color={colors.gray[700]} />
         </TouchableOpacity>
 
-        {isMyAd && productStore.id && (
+        {isMyAd && (
           <TouchableOpacity onPress={handleNavigateToEditAd}>
             <PencilSimpleLine size={24} color={colors.gray[700]} />
           </TouchableOpacity>
