@@ -6,11 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { isEqual } from 'lodash'
 
 import { Text } from '@/components/ui/text'
@@ -29,7 +25,6 @@ import { colors } from '@/styles/colors'
 import { Switch } from '@/components/switch'
 
 import type { AppRoutesNavigationProps } from '@/routes/app.routes'
-import type { ProductDTO } from '@/dtos/product'
 
 import { CancelModal } from './cancel-modal'
 
@@ -37,6 +32,7 @@ import { formatCurrencyMask } from '@/utils/format-currency-mask'
 import { getProductDetails } from '@/https/get-product-details'
 import { Loading } from '@/components/loading'
 import { api } from '@/services/api'
+import { useProductStore } from '@/store/product-store'
 
 const MAX_IMAGE_SIZE_MB = 5
 const USER_NAME = 'John Doe'
@@ -77,16 +73,10 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>
 
-type RouteParams = {
-  adId: string
-}
-
 export function Form() {
-  const route = useRoute()
+  const product = useProductStore(state => state.product)
   const toast = useToast()
   const navigate = useNavigation<AppRoutesNavigationProps>()
-
-  const { adId } = route.params as RouteParams
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -197,69 +187,35 @@ export function Form() {
     navigate.goBack()
   }
 
-  async function fetchProductDetails() {
-    try {
-      setIsLoading(true)
+  async function setProductDataOnForm() {
+    setIsLoading(true)
 
-      const { product } = await getProductDetails({ id: adId })
+    const formattedPrice = formatCurrencyMask(
+      (product?.price >= 1 ? product.price * 100 : product.price).toString()
+    )
 
-      if (!product) {
-        return toast.show({
-          placement: 'top',
-          render: ({ id }) => (
-            <ToastMessage
-              id={id}
-              action="error"
-              title="Produto nao encontrado"
-              description="Tente novamente ou mais tarde."
-              onClose={() => toast.close(id)}
-            />
-          ),
-        })
-      }
+    reset({
+      images: product.product_images.map(image => ({
+        name: image?.path,
+        type: `image/${image?.path.split('.').pop()}`,
+        uri: `${api.defaults.baseURL}/images/${image.path}`,
+      })),
 
-      const formattedPrice = formatCurrencyMask(
-        (product?.price >= 1 ? product.price * 100 : product.price).toString()
-      )
+      title: product.name,
+      description: product.description,
+      condition: product.is_new ? 'new' : 'used',
+      price: formattedPrice,
+      acceptTrade: product.accept_trade,
+      paymentMethods: product.payment_methods.map(method => method.key),
+    })
 
-      reset({
-        images: product.product_images.map(image => ({
-          name: image?.path,
-          type: `image/${image?.path.split('.').pop()}`,
-          uri: `${api.defaults.baseURL}/images/${image.path}`,
-        })),
-
-        title: product.name,
-        description: product.description,
-        condition: product.is_new ? 'new' : 'used',
-        price: formattedPrice,
-        acceptTrade: product.accept_trade,
-        paymentMethods: product.payment_methods.map(method => method.key),
-      })
-    } catch (error) {
-      console.log(error)
-
-      toast.show({
-        placement: 'top',
-        render: ({ id }) => (
-          <ToastMessage
-            id={id}
-            action="error"
-            title="Não foi possível carregar os dados do produto"
-            description="Tente novamente ou mais tarde."
-            onClose={() => toast.close(id)}
-          />
-        ),
-      })
-    } finally {
-      setIsLoading(false)
-    }
+    setIsLoading(false)
   }
 
   useFocusEffect(
     useCallback(() => {
-      fetchProductDetails()
-    }, [adId])
+      setProductDataOnForm()
+    }, [product])
   )
 
   if (isLoading) {

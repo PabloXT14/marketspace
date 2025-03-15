@@ -29,9 +29,7 @@ export type AppRoutesProps = {
     data: CreateAdFormProps
     action: 'create' | 'update'
   }
-  editAd: {
-    adId: string
-  }
+  editAd: undefined
   signOut: undefined
 }
 

@@ -25,6 +25,9 @@ import type { AllowedPaymentMethods } from '@/dtos/product'
 import { useToast } from '@/components/ui/toast'
 import { createProduct } from '@/https/create-product'
 import { createProductImages } from '@/https/create-product-images'
+import { updateProduct } from '@/https/update-product'
+import { useProductStore } from '@/store/product-store'
+import { isEqual } from 'lodash'
 
 type RouteParams = {
   data: CreateAdFormProps
@@ -34,6 +37,7 @@ type RouteParams = {
 export function AdPreview() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const product = useProductStore(state => state.product)
   const navigate = useNavigation<AppRoutesNavigationProps>()
   const route = useRoute()
   const toast = useToast()
@@ -101,7 +105,72 @@ export function AdPreview() {
   }
 
   async function handleUpdateAd() {
-    console.log(data)
+    try {
+      setIsSubmitting(true)
+
+      const numericPrice = Number(data.price.toString().replace(',', '.'))
+      const isNew = data.condition === 'new'
+      const paymentMethods = data.paymentMethods as AllowedPaymentMethods[]
+
+      await updateProduct({
+        product_id: product.id,
+        data: {
+          name: data.title === product.name ? undefined : data.title,
+          description:
+            data.description === product.description
+              ? undefined
+              : data.description,
+          price: numericPrice === product.price ? undefined : numericPrice,
+          is_new: isNew === product.is_new ? undefined : isNew,
+          accept_trade:
+            data.acceptTrade === product.accept_trade
+              ? undefined
+              : data.acceptTrade,
+          payment_methods: isEqual(paymentMethods, product.payment_methods)
+            ? undefined
+            : paymentMethods,
+        },
+      })
+
+      // const { images } = await createProductImages({
+      //   data: {
+      //     product_id: product.id,
+      //     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      //     images: data.images as any,
+      //   },
+      // })
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="success"
+            title="Produto atualizado com sucesso!"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+
+      navigate.navigate('myAds')
+    } catch (error) {
+      console.log(error)
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title="Erro ao atualizar o anúncio!"
+            description="Tente novamente ou mais tarde"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   useFocusEffect(

@@ -27,6 +27,7 @@ import { api } from '@/services/api'
 
 import { colors } from '@/styles/colors'
 import { updateProductVisibility } from '@/https/update-product-visibility'
+import { useProductStore } from '@/store/product-store'
 
 type RouteParams = {
   adId: string
@@ -36,6 +37,8 @@ export function AdDetails() {
   const navigate = useNavigation<AppRoutesNavigationProps>()
   const route = useRoute()
   const user = useAuthStore(state => state.user)
+  const { product: productStore, setProduct: setProductStore } =
+    useProductStore(state => state)
   const toast = useToast()
 
   const { adId } = route.params as RouteParams
@@ -50,7 +53,7 @@ export function AdDetails() {
   }
 
   function handleNavigateToEditAd() {
-    navigate.navigate('editAd', { adId: product.id })
+    navigate.navigate('editAd')
   }
 
   async function fetchProductDetails() {
@@ -60,6 +63,7 @@ export function AdDetails() {
       const { product } = await getProductDetails({ id: adId })
 
       setProduct(product)
+      setProductStore(product)
     } catch (error) {
       console.log(error)
 
@@ -153,7 +157,7 @@ export function AdDetails() {
           <ArrowLeft size={24} color={colors.gray[700]} />
         </TouchableOpacity>
 
-        {isMyAd && (
+        {isMyAd && productStore.id && (
           <TouchableOpacity onPress={handleNavigateToEditAd}>
             <PencilSimpleLine size={24} color={colors.gray[700]} />
           </TouchableOpacity>
