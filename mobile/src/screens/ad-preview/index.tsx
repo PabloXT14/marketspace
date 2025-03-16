@@ -27,6 +27,9 @@ import { createProduct } from '@/https/create-product'
 import { createProductImages } from '@/https/create-product-images'
 import { updateProduct } from '@/https/update-product'
 import { useProductStore } from '@/store/product-store'
+import { api } from '@/services/api'
+import { deleteProductImages } from '@/https/delete-product-images'
+import { isAxiosError } from 'axios'
 
 type RouteParams = {
   action: AppRoutesProps['adPreview']['action']
@@ -46,6 +49,44 @@ export function AdPreview() {
 
   function handleGoBack() {
     navigate.goBack()
+  }
+
+  async function handleUpdateAdImages() {
+    // Comparando imagens atuais e novas do produto
+    const currentImages = product.product_images.map(image => image)
+    const newImages = productPreview.images
+
+    const imagesToRemove = currentImages.filter(
+      img =>
+        !newImages.some(
+          newImg => newImg.uri === `${api.defaults.baseURL}/images/${img.path}`
+        )
+    )
+
+    const imagesToAdd = newImages.filter(
+      newImg =>
+        !currentImages.some(
+          img => `${api.defaults.baseURL}/images/${img.path}` === newImg.uri
+        )
+    )
+
+    // Removendo imagens que não estão mais na lista de imagens do produto
+    if (imagesToRemove.length > 0) {
+      await deleteProductImages({
+        productImagesIds: imagesToRemove.map(image => image.id),
+      })
+    }
+
+    // Criando novas imagens
+    if (imagesToAdd.length > 0) {
+      await createProductImages({
+        data: {
+          product_id: product.id,
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          images: imagesToAdd as any,
+        },
+      })
+    }
   }
 
   async function handleCreateAd() {
@@ -141,13 +182,7 @@ export function AdPreview() {
         },
       })
 
-      // const { images } = await createProductImages({
-      //   data: {
-      //     product_id: product.id,
-      //     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      //     images: data.images as any,
-      //   },
-      // })
+      await handleUpdateAdImages()
 
       toast.show({
         placement: 'top',
@@ -165,6 +200,10 @@ export function AdPreview() {
     } catch (error) {
       console.log(error)
 
+      const errorMessage =
+        (isAxiosError(error) && error.response?.data?.message) ||
+        'Tente novamente ou mais tarde'
+
       toast.show({
         placement: 'top',
         render: ({ id }) => (
@@ -172,7 +211,7 @@ export function AdPreview() {
             id={id}
             action="error"
             title="Erro ao atualizar o anúncio!"
-            description="Tente novamente ou mais tarde"
+            description={errorMessage}
             onClose={() => toast.close(id)}
           />
         ),
@@ -196,6 +235,9 @@ export function AdPreview() {
       }
     }, [])
   )
+
+  // console.log('CURRENT PRODUCT: ', product)
+  // console.log('PREVIEW PRODUCT: ', productPreview)
 
   return (
     <VStack className="flex-1">
