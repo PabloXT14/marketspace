@@ -22,7 +22,7 @@ export function Items({ data }: ItemsProps) {
   const [products, setProducts] = useState<ProductDTO[]>([])
 
   function handleNavigateToAdDetail(adId: string) {
-    navigate.navigate('adDetails', { adId })
+    navigate.navigate('productDetails', { adId })
   }
 
   useEffect(() => {

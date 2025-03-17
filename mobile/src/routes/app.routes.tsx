@@ -6,11 +6,11 @@ import {
 import { House, Tag } from 'phosphor-react-native'
 
 import { Home } from '@/screens/home'
-import { AdDetails } from '@/screens/ad-details'
-import { MyAds } from '@/screens/my-ads'
-import { CreateAd } from '@/screens/create-ad'
-import { AdPreview } from '@/screens/ad-preview'
-import { EditAd } from '@/screens/edit-ad'
+import { ProductDetails } from '@/screens/product-details'
+import { MyProducts } from '@/screens/my-products'
+import { CreateProduct } from '@/screens/create-product'
+import { ProductPreview } from '@/screens/product-preview'
+import { EditProduct } from '@/screens/edit-product'
 
 import { colors } from '@/styles/colors'
 import { SignOutAlert } from '@/components/sign-out-alert'
@@ -18,15 +18,15 @@ import { View } from 'react-native'
 
 export type AppRoutesProps = {
   home: undefined
-  adDetails: {
+  productDetails: {
     adId: string
   }
-  myAds: undefined
-  createAd: undefined
-  adPreview: {
+  myProducts: undefined
+  createProduct: undefined
+  productPreview: {
     action: 'create' | 'update'
   }
-  editAd: undefined
+  editProduct: undefined
   signOut: undefined
 }
 
@@ -78,8 +78,8 @@ export function AppRoutes() {
       />
 
       <Screen
-        name="myAds"
-        component={MyAds}
+        name="myProducts"
+        component={MyProducts}
         options={{
           tabBarIcon: ({ color, focused }) => (
             <Tag
@@ -111,8 +111,8 @@ export function AppRoutes() {
       />
 
       <Screen
-        name="adDetails"
-        component={AdDetails}
+        name="productDetails"
+        component={ProductDetails}
         options={{
           tabBarItemStyle: { display: 'none' },
           tabBarStyle: { display: 'none' },
@@ -120,8 +120,8 @@ export function AppRoutes() {
       />
 
       <Screen
-        name="createAd"
-        component={CreateAd}
+        name="createProduct"
+        component={CreateProduct}
         options={{
           tabBarItemStyle: { display: 'none' },
           tabBarStyle: { display: 'none' },
@@ -129,8 +129,8 @@ export function AppRoutes() {
       />
 
       <Screen
-        name="adPreview"
-        component={AdPreview}
+        name="productPreview"
+        component={ProductPreview}
         options={{
           tabBarItemStyle: { display: 'none' },
           tabBarStyle: { display: 'none' },
@@ -138,8 +138,8 @@ export function AppRoutes() {
       />
 
       <Screen
-        name="editAd"
-        component={EditAd}
+        name="editProduct"
+        component={EditProduct}
         options={{
           tabBarItemStyle: { display: 'none' },
           tabBarStyle: { display: 'none' },

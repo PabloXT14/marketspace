@@ -10,7 +10,7 @@ import { HStack } from '@/components/ui/hstack'
 import { Text } from '@/components/ui/text'
 
 import { ImagesCarousel } from '@/components/images-carousel'
-import { ProductInfo } from '@/components/screens/ad-preview/product-info'
+import { ProductInfo } from '@/components/screens/product-preview/product-info'
 import { Button, ButtonText } from '@/components/button'
 import { ToastMessage } from '@/components/toast-message'
 
@@ -32,10 +32,10 @@ import { deleteProductImages } from '@/https/delete-product-images'
 import { isAxiosError } from 'axios'
 
 type RouteParams = {
-  action: AppRoutesProps['adPreview']['action']
+  action: AppRoutesProps['productPreview']['action']
 }
 
-export function AdPreview() {
+export function ProductPreview() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const navigate = useNavigation<AppRoutesNavigationProps>()
@@ -127,7 +127,7 @@ export function AdPreview() {
         ),
       })
 
-      navigate.navigate('myAds')
+      navigate.navigate('myProducts')
     } catch (error) {
       console.log(error)
 
@@ -196,7 +196,7 @@ export function AdPreview() {
         ),
       })
 
-      navigate.navigate('myAds')
+      navigate.navigate('myProducts')
     } catch (error) {
       console.log(error)
 

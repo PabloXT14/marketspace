@@ -11,9 +11,9 @@ import { VStack } from '@/components/ui/vstack'
 import { HStack } from '@/components/ui/hstack'
 
 import { ImagesCarousel } from '@/components/images-carousel'
-import { ProductInfo } from '@/components/screens/ad-details/product-info'
-import { ComumFooter } from '@/components/screens/ad-details/comum-footer'
-import { MyAdFooter } from '@/components/screens/ad-details/my-ad-footer'
+import { ProductInfo } from '@/components/screens/product-details/product-info'
+import { ComumFooter } from '@/components/screens/product-details/comum-footer'
+import { MyAdFooter } from '@/components/screens/product-details/my-ad-footer'
 import { ToastMessage } from '@/components/toast-message'
 import { Loading } from '@/components/loading'
 
@@ -33,7 +33,7 @@ type RouteParams = {
   adId: string
 }
 
-export function AdDetails() {
+export function ProductDetails() {
   const navigate = useNavigation<AppRoutesNavigationProps>()
   const route = useRoute()
   const user = useAuthStore(state => state.user)
@@ -52,7 +52,7 @@ export function AdDetails() {
   }
 
   function handleNavigateToEditAd() {
-    navigate.navigate('editAd')
+    navigate.navigate('editProduct')
   }
 
   async function fetchProductDetails() {

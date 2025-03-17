@@ -26,7 +26,7 @@ export function Sell() {
   }
 
   function handleNavigateToMyAds() {
-    navigate.navigate('myAds')
+    navigate.navigate('myProducts')
   }
 
   useFocusEffect(

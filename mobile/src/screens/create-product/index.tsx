@@ -4,12 +4,12 @@ import { useFocusEffect } from '@react-navigation/native'
 
 import { VStack } from '@/components/ui/vstack'
 
-import { Header } from '@/components/screens/create-ad/header'
-import { Form } from '@/components/screens/create-ad/form'
+import { Header } from '@/components/screens/create-product/header'
+import { Form } from '@/components/screens/create-product/form'
 
 import { colors } from '@/styles/colors'
 
-export function CreateAd() {
+export function CreateProduct() {
   useFocusEffect(
     useCallback(() => {
       // Configuração da StatusBar ao entrar na tela

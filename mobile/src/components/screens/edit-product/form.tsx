@@ -177,7 +177,7 @@ export function Form() {
   async function handleGoToAdPreview(data: FormData) {
     setProductPreview(data)
 
-    navigate.navigate('adPreview', {
+    navigate.navigate('productPreview', {
       action: 'update',
     })
   }

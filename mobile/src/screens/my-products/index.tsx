@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useFocusEffect } from '@react-navigation/native'
 
 import { VStack } from '@/components/ui/vstack'
@@ -6,8 +6,8 @@ import { VStack } from '@/components/ui/vstack'
 import { HStack } from '@/components/ui/hstack'
 import { Text } from '@/components/ui/text'
 
-import { Items } from '@/components/screens/my-ads/items'
-import { Header } from '@/components/screens/my-ads/header'
+import { Items } from '@/components/screens/my-products/items'
+import { Header } from '@/components/screens/my-products/header'
 import {
   Select,
   SelectTrigger,
@@ -18,14 +18,13 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/select'
-import { Loading } from '@/components/loading'
 import { ToastMessage } from '@/components/toast-message'
 import { useToast } from '@/components/ui/toast'
 
 import { getUserProducts } from '@/https/get-user-products'
 import type { ProductDTO } from '@/dtos/product'
 
-export function MyAds() {
+export function MyProducts() {
   const [selectOptions, setSelectOptions] = useState([
     { label: 'Todos', value: 'all' },
     { label: 'Ativos', value: 'active' },

@@ -17,7 +17,7 @@ export function Header({ className, ...props }: HeaderProps) {
   const navigate = useNavigation<AppRoutesNavigationProps>()
 
   function handleNavigateToCreateAd() {
-    navigate.navigate('createAd')
+    navigate.navigate('createProduct')
   }
 
   return (

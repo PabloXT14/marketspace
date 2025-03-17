@@ -129,7 +129,7 @@ export function Home() {
           </Input>
         </VStack>
 
-        <Items data={products} />
+        {isLoading ? <Loading /> : <Items data={products} />}
       </VStack>
     </VStack>
   )

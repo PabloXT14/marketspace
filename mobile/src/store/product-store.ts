@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 import type { ProductDTO } from '@/dtos/product'
-import type { CreateAdFormProps } from '@/components/screens/create-ad/form'
+import type { CreateAdFormProps } from '@/components/screens/create-product/form'
 
 type ProductStore = {
   product: ProductDTO

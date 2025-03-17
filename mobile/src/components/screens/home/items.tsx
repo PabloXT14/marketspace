@@ -21,7 +21,7 @@ export function Items({ data: products }: ItemsProps) {
   const navigate = useNavigation<AppRoutesNavigationProps>()
 
   function handleNavigateToAdDetail(adId: string) {
-    navigate.navigate('adDetails', { adId })
+    navigate.navigate('productDetails', { adId })
   }
 
   return (

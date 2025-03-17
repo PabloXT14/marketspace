@@ -9,7 +9,7 @@ import { Tag, TagText } from '@/components/tag'
 
 import { colors } from '@/styles/colors'
 
-import type { CreateAdFormProps } from '../create-ad/form'
+import type { CreateAdFormProps } from '../create-product/form'
 import { useAuthStore } from '@/store/auth-store'
 import { api } from '@/services/api'
 

@@ -52,7 +52,7 @@ export function DeleteButtonAlert({ productId }: DeleteButtonAlertProps) {
         ),
       })
 
-      navigation.navigate('myAds')
+      navigation.navigate('myProducts')
     } catch (error) {
       console.log(error)
 
