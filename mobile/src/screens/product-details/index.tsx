@@ -30,7 +30,7 @@ import { updateProductVisibility } from '@/https/update-product-visibility'
 import { useProductStore } from '@/store/product-store'
 
 type RouteParams = {
-  adId: string
+  productId: string
 }
 
 export function ProductDetails() {
@@ -42,7 +42,7 @@ export function ProductDetails() {
   const product = useProductStore(state => state.product)
   const setProduct = useProductStore(state => state.setProduct)
 
-  const { adId } = route.params as RouteParams
+  const { productId } = route.params as RouteParams
   const [isLoading, setIsLoading] = useState(true)
 
   const [isUpdating, setUpdating] = useState(false)
@@ -59,7 +59,7 @@ export function ProductDetails() {
     try {
       setIsLoading(true)
 
-      const { product } = await getProductDetails({ id: adId })
+      const { product } = await getProductDetails({ id: productId })
 
       setProduct(product)
     } catch (error) {
@@ -132,7 +132,7 @@ export function ProductDetails() {
   useFocusEffect(
     useCallback(() => {
       fetchProductDetails()
-    }, [adId])
+    }, [productId])
   )
 
   if (!product.id || isLoading) {

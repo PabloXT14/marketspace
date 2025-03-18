@@ -20,8 +20,8 @@ const NUMBER_OF_COLUMNS = 2
 export function Items({ data: products }: ItemsProps) {
   const navigate = useNavigation<AppRoutesNavigationProps>()
 
-  function handleNavigateToAdDetail(adId: string) {
-    navigate.navigate('productDetails', { adId })
+  function handleNavigateToAdDetail(productId: string) {
+    navigate.navigate('productDetails', { productId })
   }
 
   return (

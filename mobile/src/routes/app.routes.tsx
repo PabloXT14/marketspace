@@ -19,7 +19,7 @@ import { View } from 'react-native'
 export type AppRoutesProps = {
   home: undefined
   productDetails: {
-    adId: string
+    productId: string
   }
   myProducts: undefined
   createProduct: undefined
@@ -120,6 +120,15 @@ export function AppRoutes() {
       />
 
       <Screen
+        name="editProduct"
+        component={EditProduct}
+        options={{
+          tabBarItemStyle: { display: 'none' },
+          tabBarStyle: { display: 'none' },
+        }}
+      />
+
+      <Screen
         name="createProduct"
         component={CreateProduct}
         options={{
@@ -131,15 +140,6 @@ export function AppRoutes() {
       <Screen
         name="productPreview"
         component={ProductPreview}
-        options={{
-          tabBarItemStyle: { display: 'none' },
-          tabBarStyle: { display: 'none' },
-        }}
-      />
-
-      <Screen
-        name="editProduct"
-        component={EditProduct}
         options={{
           tabBarItemStyle: { display: 'none' },
           tabBarStyle: { display: 'none' },
