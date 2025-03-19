@@ -9,6 +9,7 @@ import { Loading } from '@/components/loading'
 
 export function Routes() {
   const user = useAuthStore(state => state.user)
+  const token = useAuthStore(state => state.token)
   const loadAuthData = useAuthStore(state => state.loadAuthData)
   const isLoading = useAuthStore(state => state.isLoading)
 
@@ -23,7 +24,7 @@ export function Routes() {
   return (
     <SafeAreaView className="flex-1 bg-gray-200">
       <NavigationContainer>
-        {user ? <AppRoutes /> : <AuthRoutes />}
+        {user && token ? <AppRoutes /> : <AuthRoutes />}
       </NavigationContainer>
     </SafeAreaView>
   )
